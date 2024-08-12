@@ -1,15 +1,14 @@
 package com.velas.vivene.inventory.manager.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.time.LocalDate;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "Usuario")
-public class Usuario {
+@Table(name = "Clientes")
+public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,11 +18,11 @@ public class Usuario {
     @Column(name = "nome")
     private String nome;
 
-    @Column(name="ultimo_acesso")
-    private LocalDate ultimoAcesso;
+    @Column(name = "telefone")
+    private String telefone;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_login")
-    private Login login;
+    @Column(name = "qtdPedidos")
+    private Integer qtdPedidos;
 
 }
+
