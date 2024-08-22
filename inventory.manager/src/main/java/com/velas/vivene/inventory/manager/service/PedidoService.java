@@ -27,29 +27,17 @@ public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
     private final PedidoMapper pedidoMapper;
-    private final ClienteRepository clienteRepository;
     private final LoteRepository loteRepository;
 
-    public Pedido criarPedido(PedidoRequestDto pedidoRequest) {
-        Cliente cliente = clienteRepository.findById(pedidoRequest.getClienteId())
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
-
-        Pedido pedido = new Pedido();
-        pedido.setDtPedido(pedidoRequest.getDtPedido());
-        pedido.setStatus(pedidoRequest.getStatus());
-        pedido.setDescricao(pedidoRequest.getDescricao());
-        pedido.setTipoEntrega(pedidoRequest.getTipoEntrega());
-        pedido.setCliente(cliente);
-
+    public PedidoResponseDto criarPedido(PedidoRequestDto pedidoRequest) {
+        Pedido pedido = pedidoMapper.toEntity(pedidoRequest);
         List<PedidoLote> pedidoLotes = new ArrayList<>();
 
-        System.out.println(pedidoRequest.getPedidoLotes());
         for (PedidoLoteRequestDto pedidoLoteRequest : pedidoRequest.getPedidoLotes()) {
             Optional<Lote> lote = loteRepository.findById(pedidoLoteRequest.getLoteId());
             if(lote.get() == null){
                 return null;
             }else {
-
 
                 PedidoLote pedidoLote = new PedidoLote();
                 pedidoLote.setLote(lote.get());
@@ -61,8 +49,9 @@ public class PedidoService {
         }
 
         pedido.setPedidoLotes(pedidoLotes);
+        Pedido pedidoSave = pedidoRepository.save(pedido);
 
-        return pedidoRepository.save(pedido);
+        return pedidoMapper.toResponseDTO(pedidoSave);
     }
 
     public PedidoResponseDto updatePedido(Integer id, PedidoRequestDto pedidoRequestDTO) {

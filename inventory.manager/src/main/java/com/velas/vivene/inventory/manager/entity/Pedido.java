@@ -21,8 +21,8 @@ public class Pedido {
     @Column(name = "data_do_pedido")
     private LocalDate dtPedido;
 
-//    @Column(name = "preco")
-//    private Double preco;
+    @Column(name = "preco")
+    private Double preco;
 
     @Column(name = "descricao")
     private String descricao;

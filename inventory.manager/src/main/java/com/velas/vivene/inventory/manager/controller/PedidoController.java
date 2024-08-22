@@ -24,8 +24,8 @@ public class PedidoController {
 
     @Operation(summary = "Cria um novo pedido")
     @PostMapping
-    public ResponseEntity<Pedido> criarPedido(@Valid @RequestBody PedidoRequestDto pedidoRequest) {
-        Pedido novoPedido = pedidoService.criarPedido(pedidoRequest);
+    public ResponseEntity<PedidoResponseDto> criarPedido(@Valid @RequestBody PedidoRequestDto pedidoRequest) {
+        PedidoResponseDto novoPedido = pedidoService.criarPedido(pedidoRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoPedido);
     }
 

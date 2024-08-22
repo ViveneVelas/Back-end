@@ -3,7 +3,6 @@ import lombok.Data;
 
 @Data
 public class PedidoLoteResponseDto {
-
     private Integer id;
     private Integer fkLote;
     private Integer fkPedido;

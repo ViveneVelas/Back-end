@@ -16,8 +16,8 @@ public class PedidoRequestDto {
     @NotNull(message = "A data do pedido é obrigatória.")
     private LocalDate dtPedido;
 
-//    @NotNull(message = "O preço é obrigatório.")
-//    private Double preco;
+    @NotNull(message = "O preço é obrigatório.")
+    private Double preco;
 
     @NotBlank(message = "A descrição é obrigatória.")
     private String descricao;

@@ -14,7 +14,7 @@ public class PedidoMapper {
     public Pedido toEntity(PedidoRequestDto pedidoRequestDTO) {
         Pedido pedido = new Pedido();
         pedido.setDtPedido(pedidoRequestDTO.getDtPedido());
-//        pedido.setPreco(pedidoRequestDTO.getPreco());
+        pedido.setPreco(pedidoRequestDTO.getPreco());
         pedido.setDescricao(pedidoRequestDTO.getDescricao());
         pedido.setTipoEntrega(pedidoRequestDTO.getTipoEntrega());
 
@@ -30,7 +30,7 @@ public class PedidoMapper {
         PedidoResponseDto responseDTO = new PedidoResponseDto();
         responseDTO.setId(pedido.getId());
         responseDTO.setDtPedido(pedido.getDtPedido());
-//        responseDTO.setPreco(pedido.getPreco());
+        responseDTO.setPreco(pedido.getPreco());
         responseDTO.setDescricao(pedido.getDescricao());
         responseDTO.setTipoEntrega(pedido.getTipoEntrega());
         responseDTO.setStatus(pedido.getStatus());
