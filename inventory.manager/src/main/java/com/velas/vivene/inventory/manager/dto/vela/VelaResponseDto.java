@@ -8,7 +8,6 @@ public class VelaResponseDto {
 
     private Integer id;
     private String nome;
-    private String aroma;
-    private Tamanho tamanho;
+    private String tamanho;
     private Double preco;
 }

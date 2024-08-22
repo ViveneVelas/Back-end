@@ -18,11 +18,8 @@ public class Vela {
     @Column(name = "nome")
     private String nome;
 
-    @Column(name = "aroma")
-    private String aroma;
-
     @Column(name = "tamanho")
-    private Tamanho tamanho;
+    private String tamanho;
 
     @Column(name = "preco")
     private Double preco;

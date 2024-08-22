@@ -2,6 +2,7 @@ package com.velas.vivene.inventory.manager.controller;
 
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoRequestDto;
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoResponseDto;
+import com.velas.vivene.inventory.manager.entity.Pedido;
 import com.velas.vivene.inventory.manager.service.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,9 +24,9 @@ public class PedidoController {
 
     @Operation(summary = "Cria um novo pedido")
     @PostMapping
-    public ResponseEntity<PedidoResponseDto> createPedido(@Valid @RequestBody PedidoRequestDto pedidoRequestDTO) {
-        PedidoResponseDto responseDTO = pedidoService.createPedido(pedidoRequestDTO);
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+    public ResponseEntity<Pedido> criarPedido(@Valid @RequestBody PedidoRequestDto pedidoRequest) {
+        Pedido novoPedido = pedidoService.criarPedido(pedidoRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoPedido);
     }
 
     @Operation(summary = "Atualiza um pedido existente")

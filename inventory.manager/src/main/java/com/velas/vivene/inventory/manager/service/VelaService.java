@@ -29,7 +29,6 @@ public class VelaService {
                 .orElseThrow(() -> new ResourceNotFoundException("Vela não encontrada com o id: " + id));
 
         vela.setNome(velaRequestDTO.getNome());
-        vela.setAroma(velaRequestDTO.getAroma());
         vela.setTamanho(velaRequestDTO.getTamanho());
         vela.setPreco(velaRequestDTO.getPreco());
 

@@ -34,7 +34,7 @@ public class VendaMapper {
         responseDTO.setId(venda.getId());
         responseDTO.setPedidoId(venda.getPedido().getId());
         responseDTO.setMetodoPag(venda.getMetodoPag());
-        responseDTO.setPrecoTotal(venda.getPedido().getPreco());
+//        responseDTO.setPrecoTotal(venda.getPedido().getPreco());
         responseDTO.setStatusPedido(venda.getPedido().getStatus());
 
         return responseDTO;

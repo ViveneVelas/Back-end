@@ -1,11 +1,12 @@
 package com.velas.vivene.inventory.manager.entity;
 
-import com.velas.vivene.inventory.manager.commons.Estado;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,8 +21,8 @@ public class Pedido {
     @Column(name = "data_do_pedido")
     private LocalDate dtPedido;
 
-    @Column(name = "preco")
-    private Double preco;
+//    @Column(name = "preco")
+//    private Double preco;
 
     @Column(name = "descricao")
     private String descricao;
@@ -29,10 +30,13 @@ public class Pedido {
     @Column(name = "tipoEntrega")
     private String tipoEntrega;
 
-    @Column(name = "status_do_pedid")
+    @Column(name = "status_do_pedido")
     private String status;
 
     @OneToOne
     @JoinColumn(name = "fk_cliente")
     private Cliente cliente;
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    private List<PedidoLote> pedidoLotes = new ArrayList<>();
 }
