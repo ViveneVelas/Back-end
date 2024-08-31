@@ -2,6 +2,7 @@ package com.velas.vivene.inventory.manager.controller;
 
 import com.velas.vivene.inventory.manager.dto.vela.VelaRequestDto;
 import com.velas.vivene.inventory.manager.dto.vela.VelaResponseDto;
+import com.velas.vivene.inventory.manager.dto.velamaisvendida.VelaMaisVendidaResponse;
 import com.velas.vivene.inventory.manager.service.VelaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -52,6 +53,14 @@ public class VelaController {
     @GetMapping("/{id}")
     public ResponseEntity<VelaResponseDto> getVelaById(@PathVariable Integer id) {
         VelaResponseDto responseDTO = velaService.getVelaById(id);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Buscar vela mais vendida")
+    @GetMapping("/vendida")
+    public ResponseEntity<List<VelaMaisVendidaResponse>> getVelaVendida() {
+        System.out.println("CONTROLLER");
+        List<VelaMaisVendidaResponse> responseDTO = velaService.getVelaVendida();
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 }
