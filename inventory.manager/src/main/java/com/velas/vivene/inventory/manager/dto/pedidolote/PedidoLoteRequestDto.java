@@ -9,5 +9,8 @@ public class PedidoLoteRequestDto {
     private Integer loteId;
 
     @NotNull
+    private Integer pedidoId;
+
+    @NotNull
     private Integer quantidade;
 }

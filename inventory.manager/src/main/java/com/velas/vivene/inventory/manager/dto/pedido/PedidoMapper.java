@@ -17,6 +17,7 @@ public class PedidoMapper {
         pedido.setPreco(pedidoRequestDTO.getPreco());
         pedido.setDescricao(pedidoRequestDTO.getDescricao());
         pedido.setTipoEntrega(pedidoRequestDTO.getTipoEntrega());
+        pedido.setStatus(pedidoRequestDTO.getStatus());
 
         Cliente cliente = clienteRepository.findById(pedidoRequestDTO.getClienteId())
                 .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado com o id: " + pedidoRequestDTO.getClienteId()));

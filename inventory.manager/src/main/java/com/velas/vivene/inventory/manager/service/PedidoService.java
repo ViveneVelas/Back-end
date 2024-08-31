@@ -50,7 +50,6 @@ public class PedidoService {
 
         pedido.setPedidoLotes(pedidoLotes);
         Pedido pedidoSave = pedidoRepository.save(pedido);
-
         return pedidoMapper.toResponseDTO(pedidoSave);
     }
 
@@ -89,6 +88,7 @@ public class PedidoService {
                 .map(pedidoMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
+
 
     public PedidoResponseDto getPedidoById(Integer id) {
         Pedido pedido = pedidoRepository.findById(id)
