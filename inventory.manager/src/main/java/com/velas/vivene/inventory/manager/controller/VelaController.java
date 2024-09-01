@@ -17,6 +17,7 @@ import java.util.List;
 @RequestMapping("/velas")
 @RequiredArgsConstructor
 @Tag(name = "Vela Controller", description = "APIs para gerenciamento de velas")
+@CrossOrigin(origins = "http://localhost:3000")
 public class VelaController {
 
     private final VelaService velaService;

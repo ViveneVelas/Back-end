@@ -17,6 +17,7 @@ import java.util.List;
 @RequestMapping("/logins")
 @RequiredArgsConstructor
 @Tag(name = "Login Controller", description = "APIs para gerenciamento de logins")
+@CrossOrigin(origins = "http://localhost:3000")
 public class LoginController {
 
     private final LoginService loginService;

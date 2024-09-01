@@ -18,6 +18,7 @@ import java.util.List;
 @RequestMapping("/lotes")
 @RequiredArgsConstructor
 @Tag(name = "Lote Controller", description = "API para gerenciamento de lotes")
+@CrossOrigin(origins = "http://localhost:3000")
 public class LoteController {
 
     private final LoteService loteService;
