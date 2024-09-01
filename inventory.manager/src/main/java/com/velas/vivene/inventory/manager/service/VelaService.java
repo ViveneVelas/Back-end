@@ -65,14 +65,10 @@ public class VelaService {
     }
 
     public List<VelaMaisVendidaResponse> getVelaVendida() {
-        System.out.println("service");
         List<VelaMaisVendida> velas = velaMaisVendidaRepository.findAll();
         List<VelaMaisVendidaResponse> velasResponse = new ArrayList<>();
 
         for (VelaMaisVendida v : velas) {
-            System.out.println("VELA BRUTA:"+v);
-            System.out.println("VELA BRUTA:"+v.getNomeVela());
-            System.out.println("VELA BRUTA:"+v.getQtd());
             VelaMaisVendidaResponse velaR = new VelaMaisVendidaResponse();
             velaR = velaMaisVendidaMapper.toResponseDTO(v);
             velasResponse.add(velaR);

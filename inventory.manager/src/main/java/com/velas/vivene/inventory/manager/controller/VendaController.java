@@ -1,7 +1,9 @@
 package com.velas.vivene.inventory.manager.controller;
 
+import com.velas.vivene.inventory.manager.dto.velamaisvendida.VelaMaisVendidaResponse;
 import com.velas.vivene.inventory.manager.dto.venda.VendaRequestDto;
 import com.velas.vivene.inventory.manager.dto.venda.VendaResponseDto;
+import com.velas.vivene.inventory.manager.dto.vendasdasemana.VendasDaSemanaResponseDto;
 import com.velas.vivene.inventory.manager.service.VendaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -54,5 +56,19 @@ public class VendaController {
     public ResponseEntity<VendaResponseDto> getVendaById(@PathVariable Integer id) {
         VendaResponseDto responseDTO = vendaService.getVendaById(id);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Buscar vendas feitas nessa semana")
+    @GetMapping("/semanal")
+    public ResponseEntity<List<VendasDaSemanaResponseDto>> getVendaSemanal() {
+        List<VendasDaSemanaResponseDto> responseDTO = vendaService.getVendaSemanal();
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Buscar quantidade de vendas feitas nessa semana")
+    @GetMapping("/semanal/quantidade")
+    public ResponseEntity<Integer> getQtdVendaSemanal() {
+        Integer qtd = vendaService.getQtdVendaSemanal();
+        return new ResponseEntity<>(qtd, HttpStatus.OK);
     }
 }

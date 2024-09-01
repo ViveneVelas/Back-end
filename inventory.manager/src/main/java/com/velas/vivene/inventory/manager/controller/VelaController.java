@@ -57,9 +57,8 @@ public class VelaController {
     }
 
     @Operation(summary = "Buscar vela mais vendida")
-    @GetMapping("/vendida")
+    @GetMapping("/maisvendida")
     public ResponseEntity<List<VelaMaisVendidaResponse>> getVelaVendida() {
-        System.out.println("CONTROLLER");
         List<VelaMaisVendidaResponse> responseDTO = velaService.getVelaVendida();
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
