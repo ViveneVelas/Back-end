@@ -10,4 +10,6 @@ public class VelaResponseDto {
     private String nome;
     private String tamanho;
     private Double preco;
+    private String descricao;
+
 }

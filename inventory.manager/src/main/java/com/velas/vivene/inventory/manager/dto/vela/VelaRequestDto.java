@@ -18,4 +18,7 @@ public class VelaRequestDto {
     @NotNull(message = "O preço deve ser especificado")
     @Min(value = 0, message = "O preço deve ser maior ou igual a zero")
     private Double preco;
+
+    @NotBlank
+    private String descricao;
 }

@@ -21,6 +21,9 @@ public class Vela {
     @Column(name = "tamanho")
     private String tamanho;
 
+    @Column(name = "descricao")
+    private String descricao;
+
     @Column(name = "preco")
     private Double preco;
 

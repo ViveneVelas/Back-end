@@ -15,6 +15,7 @@ public class VelaMapper {
         vela.setNome(velaRequestDto.getNome());
         vela.setTamanho(velaRequestDto.getTamanho());
         vela.setPreco(velaRequestDto.getPreco());
+        vela.setDescricao(velaRequestDto.getDescricao());
 
         return vela;
     }
@@ -29,6 +30,7 @@ public class VelaMapper {
         responseDTO.setNome(vela.getNome());
         responseDTO.setTamanho(vela.getTamanho());
         responseDTO.setPreco(vela.getPreco());
+        responseDTO.setDescricao(vela.getDescricao());
 
         return responseDTO;
     }
