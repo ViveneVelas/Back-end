@@ -4,11 +4,16 @@ import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundExc
 import com.velas.vivene.inventory.manager.dto.cliente.ClienteMapper;
 import com.velas.vivene.inventory.manager.dto.cliente.ClienteRequestDto;
 import com.velas.vivene.inventory.manager.dto.cliente.ClienteResponseDto;
+import com.velas.vivene.inventory.manager.dto.clientesmaiscompras.ClienteMaisComprasResponse;
+import com.velas.vivene.inventory.manager.dto.clientesmaiscompras.ClientesMaisComprasMapper;
 import com.velas.vivene.inventory.manager.entity.Cliente;
+import com.velas.vivene.inventory.manager.entity.ClientesMaisCompras;
 import com.velas.vivene.inventory.manager.repository.ClienteRepository;
+import com.velas.vivene.inventory.manager.repository.ClientesMaisComprasRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +23,8 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
     private final ClienteMapper clienteMapper;
+    private final ClientesMaisComprasRepository clientesMaisComprasRepository;
+    private final ClientesMaisComprasMapper clientesMaisComprasMapper;
 
     public ClienteResponseDto createCliente(ClienteRequestDto clienteRequestDTO) {
         Cliente cliente = clienteMapper.toEntity(clienteRequestDTO);
@@ -54,5 +61,18 @@ public class ClienteService {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o id: " + id));
         return clienteMapper.toResponseDTO(cliente);
+    }
+
+    public List<ClienteMaisComprasResponse> getClienteMaisCompras() {
+        List<ClientesMaisCompras> clientes = clientesMaisComprasRepository.findAll();
+        List<ClienteMaisComprasResponse> clientesResponse = new ArrayList<>();
+
+        for (ClientesMaisCompras c : clientes) {
+            ClienteMaisComprasResponse clienteR = new ClienteMaisComprasResponse();
+            clienteR = clientesMaisComprasMapper.toDto(c);
+            clientesResponse.add(clienteR);
+        }
+
+        return clientesResponse;
     }
 }

@@ -2,6 +2,7 @@ package com.velas.vivene.inventory.manager.controller;
 
 import com.velas.vivene.inventory.manager.dto.lote.LoteRequestDto;
 import com.velas.vivene.inventory.manager.dto.lote.LoteResponseDto;
+import com.velas.vivene.inventory.manager.dto.lotesproximodovencimento.LotesProximoDoVencimentoResponse;
 import com.velas.vivene.inventory.manager.entity.Lote;
 import com.velas.vivene.inventory.manager.service.LoteService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,6 +57,13 @@ public class LoteController {
     public ResponseEntity<LoteResponseDto> getLoteById(@PathVariable Integer id) {
         LoteResponseDto loteResponseDto = loteService.obterLotePorId(id);
         return new ResponseEntity<>(loteResponseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Busca lotes próximo do vencimento")
+    @GetMapping("/lotes-vencimento")
+    public ResponseEntity<List<LotesProximoDoVencimentoResponse>> getLotesVencimento() {
+        List<LotesProximoDoVencimentoResponse> response = loteService.getLotesVencimento();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
 

@@ -4,14 +4,19 @@ import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundExc
 import com.velas.vivene.inventory.manager.dto.lote.LoteMapper;
 import com.velas.vivene.inventory.manager.dto.lote.LoteRequestDto;
 import com.velas.vivene.inventory.manager.dto.lote.LoteResponseDto;
+import com.velas.vivene.inventory.manager.dto.lotesproximodovencimento.LotesProximoDoVencimentoResponse;
+import com.velas.vivene.inventory.manager.dto.lotesproximodovencimento.LotesProximosDoVencimentoMapper;
 import com.velas.vivene.inventory.manager.dto.vela.VelaResponseDto;
 import com.velas.vivene.inventory.manager.entity.Lote;
+import com.velas.vivene.inventory.manager.entity.LotesProximoDoVencimento;
 import com.velas.vivene.inventory.manager.entity.Vela;
 import com.velas.vivene.inventory.manager.repository.LoteRepository;
+import com.velas.vivene.inventory.manager.repository.LotesProximoDoVencimentoRepository;
 import com.velas.vivene.inventory.manager.repository.VelaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +27,8 @@ public class LoteService {
     private final LoteRepository loteRepository;
     private final LoteMapper loteMapper;
     private final VelaRepository velaRepository;
+    private final LotesProximoDoVencimentoRepository lotesProximoDoVencimentoRepository;
+    private final LotesProximosDoVencimentoMapper lotesProximosDoVencimentoMapper;
 
     public LoteResponseDto criarLote(LoteRequestDto loteRequestDTO) {
         Vela vela = velaRepository.findById(loteRequestDTO.getFkVela())
@@ -66,5 +73,18 @@ public class LoteService {
 
     public void excluirLote(Integer id) {
         loteRepository.deleteById(id);
+    }
+
+    public List<LotesProximoDoVencimentoResponse> getLotesVencimento() {
+        List<LotesProximoDoVencimento> lotes = lotesProximoDoVencimentoRepository.findAll();
+        List<LotesProximoDoVencimentoResponse> lotesResponse = new ArrayList<>();
+
+        for (LotesProximoDoVencimento l : lotes) {
+            LotesProximoDoVencimentoResponse lotesR = new LotesProximoDoVencimentoResponse();
+            lotesR = lotesProximosDoVencimentoMapper.toResponseDto(l);
+            lotesResponse.add(lotesR);
+        }
+
+        return lotesResponse;
     }
 }

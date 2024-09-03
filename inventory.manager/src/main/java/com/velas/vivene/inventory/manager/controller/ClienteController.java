@@ -2,6 +2,7 @@ package com.velas.vivene.inventory.manager.controller;
 
 import com.velas.vivene.inventory.manager.dto.cliente.ClienteRequestDto;
 import com.velas.vivene.inventory.manager.dto.cliente.ClienteResponseDto;
+import com.velas.vivene.inventory.manager.dto.clientesmaiscompras.ClienteMaisComprasResponse;
 import com.velas.vivene.inventory.manager.service.ClienteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -56,4 +57,12 @@ public class ClienteController {
         ClienteResponseDto responseDTO = clienteService.getClienteById(id);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
+
+    @Operation(summary = "Busca clientes com mais compras")
+    @GetMapping("/clientes-mais-compras")
+    public ResponseEntity<List<ClienteMaisComprasResponse>> getClienteMaisCompras() {
+        List<ClienteMaisComprasResponse> responseDTO = clienteService.getClienteMaisCompras();
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
 }

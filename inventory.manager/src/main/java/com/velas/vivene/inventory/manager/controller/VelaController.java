@@ -1,5 +1,6 @@
 package com.velas.vivene.inventory.manager.controller;
 
+import com.velas.vivene.inventory.manager.dto.top5velasmaisvendidas.Top5VelasMaisVendidasResponse;
 import com.velas.vivene.inventory.manager.dto.vela.VelaRequestDto;
 import com.velas.vivene.inventory.manager.dto.vela.VelaResponseDto;
 import com.velas.vivene.inventory.manager.dto.velamaisvendida.VelaMaisVendidaResponse;
@@ -62,5 +63,12 @@ public class VelaController {
     public ResponseEntity<List<VelaMaisVendidaResponse>> getVelaVendida() {
         List<VelaMaisVendidaResponse> responseDTO = velaService.getVelaVendida();
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Buscar as 5 velas mais vendidas")
+    @GetMapping("/top-mais-vendidas")
+    public ResponseEntity<List<Top5VelasMaisVendidasResponse>> getTop5VelasVendidas() {
+        List<Top5VelasMaisVendidasResponse> top5VelasMaisVendidasResponses = velaService.getTop5VelasVendidas();
+        return new ResponseEntity<>(top5VelasMaisVendidasResponses, HttpStatus.OK);
     }
 }

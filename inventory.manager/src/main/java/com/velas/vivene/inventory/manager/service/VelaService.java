@@ -1,13 +1,17 @@
 package com.velas.vivene.inventory.manager.service;
 
 import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
+import com.velas.vivene.inventory.manager.dto.top5velasmaisvendidas.Top5VelasMaisVendidasMapper;
+import com.velas.vivene.inventory.manager.dto.top5velasmaisvendidas.Top5VelasMaisVendidasResponse;
 import com.velas.vivene.inventory.manager.dto.vela.VelaMapper;
 import com.velas.vivene.inventory.manager.dto.vela.VelaRequestDto;
 import com.velas.vivene.inventory.manager.dto.vela.VelaResponseDto;
 import com.velas.vivene.inventory.manager.dto.velamaisvendida.VelaMaisVendidaMapper;
 import com.velas.vivene.inventory.manager.dto.velamaisvendida.VelaMaisVendidaResponse;
+import com.velas.vivene.inventory.manager.entity.Top5VelasMaisVendidas;
 import com.velas.vivene.inventory.manager.entity.Vela;
 import com.velas.vivene.inventory.manager.entity.VelaMaisVendida;
+import com.velas.vivene.inventory.manager.repository.Top5VelasMaisVendidasRepository;
 import com.velas.vivene.inventory.manager.repository.VelaMaisVendidaRepository;
 import com.velas.vivene.inventory.manager.repository.VelaRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +30,8 @@ public class VelaService {
     private final VelaMapper velaMapper;
     private final VelaMaisVendidaRepository velaMaisVendidaRepository;
     private final VelaMaisVendidaMapper velaMaisVendidaMapper;
+    private final Top5VelasMaisVendidasRepository top5VelasMaisVendidasRepository;
+    private final Top5VelasMaisVendidasMapper top5VelasMaisVendidasMapper;
 
     public VelaResponseDto createVela(VelaRequestDto velaRequestDTO) {
         Vela vela = velaMapper.toEntity(velaRequestDTO);
@@ -71,6 +77,19 @@ public class VelaService {
         for (VelaMaisVendida v : velas) {
             VelaMaisVendidaResponse velaR = new VelaMaisVendidaResponse();
             velaR = velaMaisVendidaMapper.toResponseDTO(v);
+            velasResponse.add(velaR);
+        }
+
+        return velasResponse;
+    }
+
+    public List<Top5VelasMaisVendidasResponse> getTop5VelasVendidas() {
+        List<Top5VelasMaisVendidas> velas = top5VelasMaisVendidasRepository.findAll();
+        List<Top5VelasMaisVendidasResponse> velasResponse = new ArrayList<>();
+
+        for (Top5VelasMaisVendidas v : velas) {
+            Top5VelasMaisVendidasResponse velaR = new Top5VelasMaisVendidasResponse();
+            velaR = top5VelasMaisVendidasMapper.toDto(v);
             velasResponse.add(velaR);
         }
 
