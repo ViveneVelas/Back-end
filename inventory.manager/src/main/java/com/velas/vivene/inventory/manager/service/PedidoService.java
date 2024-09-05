@@ -6,13 +6,13 @@ import com.velas.vivene.inventory.manager.dto.pedido.PedidoMapper;
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoRequestDto;
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoResponseDto;
 import com.velas.vivene.inventory.manager.dto.pedidolote.PedidoLoteRequestDto;
-import com.velas.vivene.inventory.manager.entity.Cliente;
-import com.velas.vivene.inventory.manager.entity.Lote;
-import com.velas.vivene.inventory.manager.entity.Pedido;
-import com.velas.vivene.inventory.manager.entity.PedidoLote;
+import com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses.QuantidadeVendasSeisMesesMapper;
+import com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses.QuantidadeVendasSeisMesesResponse;
+import com.velas.vivene.inventory.manager.entity.*;
 import com.velas.vivene.inventory.manager.repository.ClienteRepository;
 import com.velas.vivene.inventory.manager.repository.LoteRepository;
 import com.velas.vivene.inventory.manager.repository.PedidoRepository;
+import com.velas.vivene.inventory.manager.repository.QuantidadeVendasSeisMesesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +28,8 @@ public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final PedidoMapper pedidoMapper;
     private final LoteRepository loteRepository;
+    private final QuantidadeVendasSeisMesesRepository quantidadeVendasSeisMesesRepository;
+    private final QuantidadeVendasSeisMesesMapper quantidadeVendasSeisMesesMapper;
 
     public PedidoResponseDto criarPedido(PedidoRequestDto pedidoRequest) {
         Pedido pedido = pedidoMapper.toEntity(pedidoRequest);
@@ -94,5 +96,18 @@ public class PedidoService {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado com o id: " + id));
         return pedidoMapper.toResponseDTO(pedido);
+    }
+
+    public List<QuantidadeVendasSeisMesesResponse> getQuantidadeVendasSeisMeses() {
+        List<QuantidadeVendasSeisMeses> vendas = quantidadeVendasSeisMesesRepository.findAll();
+        List<QuantidadeVendasSeisMesesResponse> vendasResponse = new ArrayList<>();
+
+        for (QuantidadeVendasSeisMeses v : vendas) {
+            QuantidadeVendasSeisMesesResponse vendaR = new QuantidadeVendasSeisMesesResponse();
+            vendaR = quantidadeVendasSeisMesesMapper.toDto(v);
+            vendasResponse.add(vendaR);
+        }
+
+        return vendasResponse;
     }
 }

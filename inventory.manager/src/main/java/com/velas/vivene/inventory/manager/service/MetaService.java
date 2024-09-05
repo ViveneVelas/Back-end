@@ -4,12 +4,17 @@ import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundExc
 import com.velas.vivene.inventory.manager.dto.meta.MetaMapper;
 import com.velas.vivene.inventory.manager.dto.meta.MetaRequestDto;
 import com.velas.vivene.inventory.manager.dto.meta.MetaResponseDto;
+import com.velas.vivene.inventory.manager.dto.ultimametaseismeses.UltimaMetaSeisMesesMapper;
+import com.velas.vivene.inventory.manager.dto.ultimametaseismeses.UltimaMetaSeisMesesResponse;
 import com.velas.vivene.inventory.manager.entity.Meta;
+import com.velas.vivene.inventory.manager.entity.UltimaMetaSeisMeses;
 import com.velas.vivene.inventory.manager.repository.MetaRepository;
+import com.velas.vivene.inventory.manager.repository.UltimaMetaSeisMesesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.stylesheets.LinkStyle;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +24,8 @@ public class MetaService {
 
     private final MetaRepository metaRepository;
     private final MetaMapper metaMapper;
+    private final UltimaMetaSeisMesesRepository ultimaMetaSeisMesesRepository;
+    private final UltimaMetaSeisMesesMapper ultimaMetaSeisMesesMapper;
 
     public MetaResponseDto createMeta(MetaRequestDto metaRequestDto) {
         Meta meta = metaMapper.toEntity(metaRequestDto);
@@ -55,6 +62,19 @@ public class MetaService {
         Meta meta = metaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Meta não encontrada com o id: " + id));
         return metaMapper.toDto(meta);
+    }
+
+    public List<UltimaMetaSeisMesesResponse> getUltimaMetaSeisMeses() {
+        List<UltimaMetaSeisMeses> metas = ultimaMetaSeisMesesRepository.findAll();
+        List<UltimaMetaSeisMesesResponse> metasResponse = new ArrayList<>();
+
+        for (UltimaMetaSeisMeses m : metas) {
+            UltimaMetaSeisMesesResponse metaR = new UltimaMetaSeisMesesResponse();
+            metaR = ultimaMetaSeisMesesMapper.toDto(m);
+            metasResponse.add(metaR);
+        }
+
+        return metasResponse;
     }
 
     

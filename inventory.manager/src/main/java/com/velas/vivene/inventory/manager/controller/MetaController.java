@@ -3,6 +3,7 @@ package com.velas.vivene.inventory.manager.controller;
 import com.velas.vivene.inventory.manager.dto.meta.MetaMapper;
 import com.velas.vivene.inventory.manager.dto.meta.MetaRequestDto;
 import com.velas.vivene.inventory.manager.dto.meta.MetaResponseDto;
+import com.velas.vivene.inventory.manager.dto.ultimametaseismeses.UltimaMetaSeisMesesResponse;
 import com.velas.vivene.inventory.manager.service.MetaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -56,5 +57,12 @@ public class MetaController {
     public ResponseEntity<MetaResponseDto> getMetaById(@PathVariable Integer id) {
         MetaResponseDto metaResponseDto = metaService.getMetaById(id);
         return new ResponseEntity<>(metaResponseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Busca a ultima meta de cada mes, num período de seis meses")
+    @GetMapping("/ultima-meta")
+    public ResponseEntity<List<UltimaMetaSeisMesesResponse>> getUltimaMetaSeisMeses() {
+        List<UltimaMetaSeisMesesResponse> responses = metaService.getUltimaMetaSeisMeses();
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 }

@@ -2,6 +2,7 @@ package com.velas.vivene.inventory.manager.controller;
 
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoRequestDto;
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoResponseDto;
+import com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses.QuantidadeVendasSeisMesesResponse;
 import com.velas.vivene.inventory.manager.entity.Pedido;
 import com.velas.vivene.inventory.manager.service.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -63,5 +64,12 @@ public class PedidoController {
     public ResponseEntity<PedidoResponseDto> getPedidoById(@PathVariable Integer id) {
         PedidoResponseDto responseDTO = pedidoService.getPedidoById(id);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Busca a quantidade de vendas por mes, num período de seis meses")
+    @GetMapping("/quantidade-vendas")
+    public ResponseEntity<List<QuantidadeVendasSeisMesesResponse>> getQuantidadeVendasSeisMeses() {
+        List<QuantidadeVendasSeisMesesResponse> responses = pedidoService.getQuantidadeVendasSeisMeses();
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 }
