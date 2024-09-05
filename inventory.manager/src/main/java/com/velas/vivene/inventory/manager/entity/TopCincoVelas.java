@@ -9,14 +9,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class Top5VelasMaisVendidas {
+public class TopCincoVelas {
     @Id
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "Nome da vela")
+    @Column(name = "Nome_da_vela")
     private String nomeVela;
 
-    @Column(name = "Total vendido")
+    @Column(name = "Total_Vendido")
     private Integer totalVendido;
 }

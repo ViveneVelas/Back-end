@@ -1,12 +1,12 @@
 package com.velas.vivene.inventory.manager.dto.top5velasmaisvendidas;
 
-import com.velas.vivene.inventory.manager.entity.Top5VelasMaisVendidas;
+import com.velas.vivene.inventory.manager.entity.TopCincoVelas;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Top5VelasMaisVendidasMapper {
 
-    public Top5VelasMaisVendidasResponse toDto(Top5VelasMaisVendidas top5VelasMaisVendidas) {
+    public Top5VelasMaisVendidasResponse toDto(TopCincoVelas top5VelasMaisVendidas) {
         if (top5VelasMaisVendidas == null) {
             return null;
         }

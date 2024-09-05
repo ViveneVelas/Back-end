@@ -1,7 +1,7 @@
 package com.velas.vivene.inventory.manager.repository;
 
-import com.velas.vivene.inventory.manager.entity.Top5VelasMaisVendidas;
+import com.velas.vivene.inventory.manager.entity.TopCincoVelas;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface Top5VelasMaisVendidasRepository extends JpaRepository<Top5VelasMaisVendidas, Long> {
+public interface Top5VelasMaisVendidasRepository extends JpaRepository<TopCincoVelas, Long> {
 }

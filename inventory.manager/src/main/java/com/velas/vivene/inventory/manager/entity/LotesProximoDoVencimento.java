@@ -15,14 +15,14 @@ public class LotesProximoDoVencimento {
     @Id
     @Column(name = "id")
     private Integer id;
-    @Column(name = "Nome da vela")
+    @Column(name = "nome_da_vela")
     private String nomeVela;
-    @Column(name = "Data de fabricação")
+    @Column(name = "dt_fabricacao")
     private LocalDate dataFabricacao;
-    @Column(name = "Data de validade")
+    @Column(name = "dt_validade")
     private LocalDate dataValidade;
-    @Column(name = "Quantidade disponível")
+    @Column(name = "qtd_disponivel")
     private Integer qtdDisponivel;
-    @Column(name = "Dias para vencimento")
+    @Column(name = "qtd_vencimento")
     private Integer diasVencimento;
 }

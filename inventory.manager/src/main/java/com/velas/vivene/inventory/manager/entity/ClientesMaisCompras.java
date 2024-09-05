@@ -13,8 +13,8 @@ public class ClientesMaisCompras {
     @Id
     @Column(name = "id")
     private Integer id;
-    @Column(name = "Nome do cliente")
+    @Column(name = "nome_do_cliente")
     private String nomeCliente;
-    @Column(name = "Número de pedidos")
+    @Column(name = "numero_de_pedidos")
     private Integer numPedidos;
 }

@@ -8,14 +8,13 @@ import com.velas.vivene.inventory.manager.dto.vela.VelaRequestDto;
 import com.velas.vivene.inventory.manager.dto.vela.VelaResponseDto;
 import com.velas.vivene.inventory.manager.dto.velamaisvendida.VelaMaisVendidaMapper;
 import com.velas.vivene.inventory.manager.dto.velamaisvendida.VelaMaisVendidaResponse;
-import com.velas.vivene.inventory.manager.entity.Top5VelasMaisVendidas;
+import com.velas.vivene.inventory.manager.entity.TopCincoVelas;
 import com.velas.vivene.inventory.manager.entity.Vela;
 import com.velas.vivene.inventory.manager.entity.VelaMaisVendida;
 import com.velas.vivene.inventory.manager.repository.Top5VelasMaisVendidasRepository;
 import com.velas.vivene.inventory.manager.repository.VelaMaisVendidaRepository;
 import com.velas.vivene.inventory.manager.repository.VelaRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -84,10 +83,10 @@ public class VelaService {
     }
 
     public List<Top5VelasMaisVendidasResponse> getTop5VelasVendidas() {
-        List<Top5VelasMaisVendidas> velas = top5VelasMaisVendidasRepository.findAll();
+        List<TopCincoVelas> velas = top5VelasMaisVendidasRepository.findAll();
         List<Top5VelasMaisVendidasResponse> velasResponse = new ArrayList<>();
 
-        for (Top5VelasMaisVendidas v : velas) {
+        for (TopCincoVelas v : velas) {
             Top5VelasMaisVendidasResponse velaR = new Top5VelasMaisVendidasResponse();
             velaR = top5VelasMaisVendidasMapper.toDto(v);
             velasResponse.add(velaR);
