@@ -71,4 +71,11 @@ public class VelaController {
         List<Top5VelasMaisVendidasResponse> top5VelasMaisVendidasResponses = velaService.getTop5VelasVendidas();
         return new ResponseEntity<>(top5VelasMaisVendidasResponses, HttpStatus.OK);
     }
+
+    @Operation(summary = "Buscar vela pelo nome")
+    @GetMapping("/busca-nome/{nome}")
+    public ResponseEntity<VelaResponseDto> getVelaByName(@RequestParam String name) {
+        VelaResponseDto velaResponse = velaService.getVelaByName(name);
+        return ResponseEntity.ok(velaResponse);
+    }
 }

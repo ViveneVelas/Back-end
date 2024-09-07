@@ -1,6 +1,7 @@
 package com.velas.vivene.inventory.manager.service;
 
 import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
+import com.velas.vivene.inventory.manager.datastructure.Node;
 import com.velas.vivene.inventory.manager.dto.top5velasmaisvendidas.Top5VelasMaisVendidasMapper;
 import com.velas.vivene.inventory.manager.dto.top5velasmaisvendidas.Top5VelasMaisVendidasResponse;
 import com.velas.vivene.inventory.manager.dto.vela.VelaMapper;
@@ -31,10 +32,12 @@ public class VelaService {
     private final VelaMaisVendidaMapper velaMaisVendidaMapper;
     private final Top5VelasMaisVendidasRepository top5VelasMaisVendidasRepository;
     private final Top5VelasMaisVendidasMapper top5VelasMaisVendidasMapper;
+    private final HashTableService hashTableService;
 
     public VelaResponseDto createVela(VelaRequestDto velaRequestDTO) {
         Vela vela = velaMapper.toEntity(velaRequestDTO);
         vela = velaRepository.save(vela);
+        hashTableService.addName(vela.getNome());
         return velaMapper.toResponseDTO(vela);
     }
 
@@ -93,5 +96,16 @@ public class VelaService {
         }
 
         return velasResponse;
+    }
+
+    public VelaResponseDto getVelaByName(String name) {
+        String nomeVela = hashTableService.searchName(name);
+        if (nomeVela != null) {
+            Vela vela = velaRepository.findByNome(name)
+                    .orElseThrow(() -> new ResourceNotFoundException("Vela não encontrada com o nome: " + name));
+            return velaMapper.toResponseDTO(vela);
+        } else {
+            throw new ResourceNotFoundException("Vela não encontrada com o nome: " + name);
+        }
     }
 }
