@@ -56,4 +56,11 @@ public class LoginController {
         LoginResponseDto responseDTO = loginService.getLoginById(id);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
+
+    @Operation(summary = "Realiza o login")
+    @PostMapping("/logar")
+    public ResponseEntity<LoginResponseDto> getLogin(@Valid @RequestBody LoginRequestDto loginRequestDto) {
+        LoginResponseDto responseDTO = loginService.getLogin(loginRequestDto);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
 }

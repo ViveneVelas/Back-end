@@ -10,6 +10,9 @@ public class UsuarioRequestDto {
     @NotBlank(message = "O nome não pode estar em branco")
     private String nome;
 
+    @NotBlank(message = "O telefone não pode estar em branco")
+    private String telefone;
+
     @NotNull(message = "Os dados de login são obrigatórios")
     private LoginRequestDto login;
 }

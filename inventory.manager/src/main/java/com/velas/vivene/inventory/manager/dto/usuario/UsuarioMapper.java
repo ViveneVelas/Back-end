@@ -18,6 +18,7 @@ public class UsuarioMapper {
 
         Usuario usuario = new Usuario();
         usuario.setNome(usuarioRequestDTO.getNome());
+        usuario.setTelefone(usuarioRequestDTO.getTelefone());
         usuario.setLogin(loginMapper.toEntity(usuarioRequestDTO.getLogin()));
 
         return usuario;
@@ -31,6 +32,7 @@ public class UsuarioMapper {
         UsuarioResponseDto responseDTO = new UsuarioResponseDto();
         responseDTO.setId(usuario.getId());
         responseDTO.setNome(usuario.getNome());
+        responseDTO.setTelefone(usuario.getNome());
         responseDTO.setUltimoAcesso(usuario.getUltimoAcesso());
         responseDTO.setLogin(loginMapper.toResponseDTO(usuario.getLogin()));
 

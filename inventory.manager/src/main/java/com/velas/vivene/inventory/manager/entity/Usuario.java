@@ -19,6 +19,9 @@ public class Usuario {
     @Column(name = "nome")
     private String nome;
 
+    @Column(name = "telefone")
+    private String telefone;
+
     @Column(name="ultimo_acesso")
     private LocalDate ultimoAcesso;
 

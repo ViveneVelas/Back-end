@@ -54,4 +54,10 @@ public class LoginService {
                 .orElseThrow(() -> new ResourceNotFoundException("Login não encontrado com o id: " + id));
         return loginMapper.toResponseDTO(login);
     }
+
+    public LoginResponseDto getLogin(LoginRequestDto loginRequestDto) {
+        Login login = loginRepository.findByEmailAndSenha(loginRequestDto.getEmail(), loginRequestDto.getSenha())
+                .orElseThrow(() -> new ResourceNotFoundException("Login não encontrado com o email e senha fornecidos."));
+        return loginMapper.toResponseDTO(login);
+    }
 }

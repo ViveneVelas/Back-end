@@ -55,4 +55,11 @@ public class UsuarioController {
         UsuarioResponseDto responseDTO = usuarioService.getUsuarioById(id);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
+
+    @Operation(summary = "Busca um usuário pelo ID de Login (FK)")
+    @GetMapping("/fklogin/{id}")
+    public ResponseEntity<UsuarioResponseDto> getUsuarioByIdLogin(@RequestParam("loginId") Integer loginId) {
+        UsuarioResponseDto responseDTO = usuarioService.getUsuarioByIdLogin(loginId);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
 }

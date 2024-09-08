@@ -10,6 +10,7 @@ public class UsuarioResponseDto {
 
     private Integer id;
     private String nome;
+    private String telefone;
     private LocalDate ultimoAcesso;
     private LoginResponseDto login;
 }

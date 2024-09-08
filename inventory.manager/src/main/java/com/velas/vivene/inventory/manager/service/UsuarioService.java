@@ -4,6 +4,7 @@ import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundExc
 import com.velas.vivene.inventory.manager.dto.usuario.UsuarioMapper;
 import com.velas.vivene.inventory.manager.dto.usuario.UsuarioRequestDto;
 import com.velas.vivene.inventory.manager.dto.usuario.UsuarioResponseDto;
+import com.velas.vivene.inventory.manager.entity.Login;
 import com.velas.vivene.inventory.manager.entity.Usuario;
 import com.velas.vivene.inventory.manager.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +60,12 @@ public class UsuarioService {
         Optional <Usuario> usuario = Optional.ofNullable(usuarioRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Usuário não encontrado com o id: "+id)
         ));
+        return usuarioMapper.toResponseDTO(usuario.get());
+    }
+
+    public UsuarioResponseDto getUsuarioByIdLogin(Integer id) {
+        Optional<Usuario> usuario = usuarioRepository.findByLoginId(id);
+//                .orElseThrow(() -> new ResourceNotFoundException("Usuario não encontrado com o email e senha fornecidos."));
         return usuarioMapper.toResponseDTO(usuario.get());
     }
 }
