@@ -72,10 +72,9 @@ public class VelaController {
         return new ResponseEntity<>(top5VelasMaisVendidasResponses, HttpStatus.OK);
     }
 
-    @Operation(summary = "Buscar vela pelo nome")
-    @GetMapping("/busca-nome/{nome}")
-    public ResponseEntity<VelaResponseDto> getVelaByName(@RequestParam String name) {
-        VelaResponseDto velaResponse = velaService.getVelaByName(name);
-        return ResponseEntity.ok(velaResponse);
+    @Operation(summary = "Buscar velas pelo nome")
+    @GetMapping("/buscar-vela-nome/{nome}")
+    public List<VelaResponseDto> getVelasByName(@PathVariable String nome) {
+        return velaService.getVelasByName(nome);
     }
 }

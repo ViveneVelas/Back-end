@@ -98,14 +98,15 @@ public class VelaService {
         return velasResponse;
     }
 
-    public VelaResponseDto getVelaByName(String name) {
-        String nomeVela = hashTableService.searchName(name);
-        if (nomeVela != null) {
-            Vela vela = velaRepository.findByNome(name)
-                    .orElseThrow(() -> new ResourceNotFoundException("Vela não encontrada com o nome: " + name));
-            return velaMapper.toResponseDTO(vela);
-        } else {
-            throw new ResourceNotFoundException("Vela não encontrada com o nome: " + name);
-        }
+    public List<VelaResponseDto> getVelasByName(String nome) {
+        List<String> nomes = hashTableService.searchNames(nome);
+
+        List<Vela> velas = velaRepository.findAllByNomeIn(nomes);
+
+        return velas.stream()
+                .map(velaMapper::toResponseDTO)
+                .collect(Collectors.toList());
     }
+
 }
+
