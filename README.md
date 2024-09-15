@@ -6,6 +6,12 @@ O backend do projeto **Vivene Velas** foi desenvolvido utilizando **Java 17** co
 
 O backend oferece um serviço completo com base na arquitetura RESTful, permitindo operações CRUD (Create, Read, Update, Delete) para gerenciar os dados relacionados às velas.
 
+## Andamento do projeto
+
+<p align = "center">
+<img src="https://img.shields.io/static/v1?label=STATUS&message=EM%20ANDAMENTO&color=yellow&style=for-the-badge"/>
+</p>
+
 ## Convenções de Codificação
 
 - **Idioma:** Português
