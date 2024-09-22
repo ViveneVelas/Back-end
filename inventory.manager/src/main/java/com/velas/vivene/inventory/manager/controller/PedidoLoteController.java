@@ -1,5 +1,6 @@
 package com.velas.vivene.inventory.manager.controller;
 
+import com.velas.vivene.inventory.manager.dto.pedido.PedidoResponseDto;
 import com.velas.vivene.inventory.manager.dto.pedidolote.PedidoLoteRequestDto;
 import com.velas.vivene.inventory.manager.dto.pedidolote.PedidoLoteResponseDto;
 import com.velas.vivene.inventory.manager.service.PedidoLoteService;
@@ -57,8 +58,12 @@ public class PedidoLoteController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Pedido lote atualizado com sucesso.",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoLoteResponseDto.class))}),
-            @ApiResponse(responseCode = "400", description = "Campos do pedido lote estão incorretos.",
-                    content = { @Content(mediaType = "application/json", schema = @Schema())})}
+            @ApiResponse(responseCode = "400", description = "Campos de pedido lote estão incorretos.",
+                    content = { @Content(mediaType = "application/json", schema = @Schema())}),
+            @ApiResponse(responseCode = "404", description = "O id informado não existe.",
+                    content = { @Content(mediaType = "application/json", schema = @Schema())})
+
+    }
     )
     public ResponseEntity<PedidoLoteResponseDto> updatePedidoLote(@PathVariable Integer id, @Valid @RequestBody PedidoLoteRequestDto pedidoLoteRequestDto) {
         PedidoLoteResponseDto pedidoLoteResponseDto = pedidoLoteService.updatePedidoLote(id, pedidoLoteRequestDto);

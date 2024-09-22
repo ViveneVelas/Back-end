@@ -59,7 +59,9 @@ public class VelaController {
             @ApiResponse(responseCode = "200", description = "Vela atualizada com sucesso (OK).",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VelaResponseDto.class))}),
             @ApiResponse(responseCode = "400", description = "Campos de vela estão incorretos.",
-                    content = { @Content(mediaType = "application/json", schema = @Schema())})}
+                    content = { @Content(mediaType = "application/json", schema = @Schema())}),
+            @ApiResponse(responseCode = "404", description = "ID da vela não existe",
+                    content = {@Content(mediaType = "application/json", schema = @Schema())})}
     )
     public ResponseEntity<VelaResponseDto> updateVela(@PathVariable Integer id, @Valid @RequestBody VelaRequestDto velaRequestDTO) {
         VelaResponseDto responseDTO = velaService.updateVela(id, velaRequestDTO);
@@ -94,7 +96,7 @@ public class VelaController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Velas buscadas com sucesso (OK).",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VelaResponseDto.class))}),
-            @ApiResponse(responseCode = "204", description = "Vela não existe no banco de dados.",
+            @ApiResponse(responseCode = "204", description = "Não há velas no banco de dados.",
                     content = { @Content(mediaType = "application/json", schema = @Schema())})}
     )
     public ResponseEntity<List<VelaResponseDto>> getAllVelas() {
@@ -179,7 +181,11 @@ public class VelaController {
             @ApiResponse(responseCode = "404", description = "Vela não encontrada.",
                     content = { @Content(mediaType = "application/json", schema = @Schema())})}
     )
-    public List<VelaResponseDto> getVelasByName(@PathVariable String nome) {
-        return velaService.getVelasByName(nome);
+    public ResponseEntity<List<VelaResponseDto>> getVelasByName(@PathVariable String nome) {
+        List<VelaResponseDto> response = velaService.getVelasByName(nome);
+        if (response.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

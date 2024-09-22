@@ -31,6 +31,6 @@ public class PedidoRequestDto {
     @NotNull(message = "O ID do cliente é obrigatório.")
     private Integer clienteId;
 
-    private List<PedidoLoteRequestDto> pedidoLotes;
-
+    @NotNull(message = "O ID do lote é obrigatório")
+    private Integer loteId;
 }

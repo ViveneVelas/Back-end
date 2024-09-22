@@ -59,7 +59,12 @@ public class PedidoController {
             @ApiResponse(responseCode = "200", description = "Pedido atualizado com sucesso.",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDto.class))}),
             @ApiResponse(responseCode = "400", description = "Campos de pedido estão incorretos.",
-                    content = { @Content(mediaType = "application/json", schema = @Schema())})})
+                    content = { @Content(mediaType = "application/json", schema = @Schema())}),
+            @ApiResponse(responseCode = "404", description = "O id informado não existe.",
+                    content = { @Content(mediaType = "application/json", schema = @Schema())})
+
+    }
+    )
     public ResponseEntity<PedidoResponseDto> updatePedido(@PathVariable Integer id, @Valid @RequestBody PedidoRequestDto pedidoRequestDTO) {
         PedidoResponseDto responseDTO = pedidoService.updatePedido(id, pedidoRequestDTO);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);

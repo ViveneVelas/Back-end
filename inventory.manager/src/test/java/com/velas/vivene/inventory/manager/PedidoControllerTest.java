@@ -46,8 +46,7 @@ public class PedidoControllerTest {
         pedidoRequestDto.setDescricao("Descrição do pedido");
         pedidoRequestDto.setTipoEntrega("Entrega rápida");
         pedidoRequestDto.setStatus("Pendente");
-        pedidoRequestDto.setClienteId(1);  // Definindo o clienteId
-        pedidoRequestDto.setPedidoLotes(null);  // Defina conforme a necessidade
+        pedidoRequestDto.setClienteId(1);  // Definindo o cliente
 
         pedidoResponseDto = new PedidoResponseDto();
         pedidoResponseDto.setId(1);

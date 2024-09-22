@@ -2,6 +2,8 @@ package com.velas.vivene.inventory.manager.service;
 
 import com.velas.vivene.inventory.manager.commons.Pagamento;
 import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
+import com.velas.vivene.inventory.manager.dto.lote.LoteMapper;
+import com.velas.vivene.inventory.manager.dto.lote.LoteResponseDto;
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoMapper;
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoRequestDto;
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoResponseDto;
@@ -28,32 +30,28 @@ public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final PedidoMapper pedidoMapper;
     private final LoteRepository loteRepository;
+    private final PedidoLoteService pedidoLoteService;
     private final QuantidadeVendasSeisMesesRepository quantidadeVendasSeisMesesRepository;
     private final QuantidadeVendasSeisMesesMapper quantidadeVendasSeisMesesMapper;
+    private final LoteMapper loteMapper;
+    private final LoteService loteService;
 
     public PedidoResponseDto criarPedido(PedidoRequestDto pedidoRequest) {
+        PedidoLoteRequestDto pedidoLote = new PedidoLoteRequestDto();
+        LoteResponseDto loteResponseDto = loteService.obterLotePorId(pedidoRequest.getLoteId());
+
         Pedido pedido = pedidoMapper.toEntity(pedidoRequest);
-        List<PedidoLote> pedidoLotes = new ArrayList<>();
-
-        for (PedidoLoteRequestDto pedidoLoteRequest : pedidoRequest.getPedidoLotes()) {
-            Optional<Lote> lote = loteRepository.findById(pedidoLoteRequest.getLoteId());
-            if(lote.get() == null){
-                return null;
-            }else {
-
-                PedidoLote pedidoLote = new PedidoLote();
-                pedidoLote.setLote(lote.get());
-                pedidoLote.setPedido(pedido);
-                pedido.getPedidoLotes().add(pedidoLote);
-
-                pedidoLotes.add(pedidoLote);
-            }
-        }
-
-        pedido.setPedidoLotes(pedidoLotes);
         Pedido pedidoSave = pedidoRepository.save(pedido);
+
+        pedidoLote.setPedidoId(pedidoSave.getId());
+        pedidoLote.setLoteId(pedidoRequest.getLoteId());
+        pedidoLote.setQuantidade(loteResponseDto.getQuantidade());
+
+        pedidoLoteService.createPedidoLote(pedidoLote);
+
         return pedidoMapper.toResponseDTO(pedidoSave);
     }
+
 
     public PedidoResponseDto updatePedido(Integer id, PedidoRequestDto pedidoRequestDTO) {
         Pedido pedido = pedidoRepository.findById(id)

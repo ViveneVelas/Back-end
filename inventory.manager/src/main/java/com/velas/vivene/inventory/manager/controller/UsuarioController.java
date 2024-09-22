@@ -1,5 +1,6 @@
 package com.velas.vivene.inventory.manager.controller;
 
+import com.velas.vivene.inventory.manager.dto.pedidolote.PedidoLoteResponseDto;
 import com.velas.vivene.inventory.manager.dto.usuario.UsuarioRequestDto;
 import com.velas.vivene.inventory.manager.dto.usuario.UsuarioResponseDto;
 import com.velas.vivene.inventory.manager.service.UsuarioService;
@@ -30,6 +31,9 @@ public class UsuarioController {
            # Criar usuário
            ---
            Esse endpoint cria um novo usuário no sistema.
+           ---
+           Nota:
+           Todos os atributos são obrigatórios
            """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso (Created).",
@@ -47,13 +51,19 @@ public class UsuarioController {
            # Atualizar usuário
            ---
            Esse endpoint atualiza os dados de um usuário existente no sistema.
+           ---
+           Nota:
+           Todos os atributos são obrigatórios
            """)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso (OK).",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponseDto.class))),
-            @ApiResponse(responseCode = "400", description = "Erro de validação dos dados fornecidos.",
-                    content = @Content(mediaType = "application/json"))
-    })
+            @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso.",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponseDto.class))}),
+            @ApiResponse(responseCode = "400", description = "Campos de usuário estão incorretos.",
+                    content = { @Content(mediaType = "application/json", schema = @Schema())}),
+            @ApiResponse(responseCode = "404", description = "O id informado não existe.",
+                    content = { @Content(mediaType = "application/json", schema = @Schema())})
+    }
+    )
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioResponseDto> updateUsuario(@PathVariable Integer id, @Valid @RequestBody UsuarioRequestDto usuarioRequestDTO) {
         UsuarioResponseDto responseDTO = usuarioService.updateUsuario(id, usuarioRequestDTO);
@@ -64,6 +74,9 @@ public class UsuarioController {
            # Deletar usuário
            ---
            Esse endpoint remove um usuário do sistema.
+           ---
+           Nota:
+           O usuário deve existir no banco de dados
            """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Usuário deletado com sucesso (No Content)."),
@@ -97,6 +110,9 @@ public class UsuarioController {
            # Buscar usuário por ID
            ---
            Esse endpoint retorna os dados de um usuário a partir do seu ID.
+           ---
+           Nota:
+           O ID é obrigatório
            """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuário encontrado com sucesso (OK).",
@@ -113,7 +129,10 @@ public class UsuarioController {
     @Operation(summary = "Busca um usuário pelo ID de Login (FK)", description = """
            # Buscar usuário por ID de Login
            ---
-           Esse endpoint retorna os dados de um usuário a partir do ID de Login (FK).
+           Esse endpoint retorna os dados de um usuário a partir do ID de Login (FK)
+           ---
+           Nota:
+           O id do login é obrigatório
            """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuário encontrado com sucesso (OK).",
