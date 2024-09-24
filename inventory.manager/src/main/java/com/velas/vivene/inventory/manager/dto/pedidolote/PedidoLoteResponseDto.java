@@ -6,4 +6,5 @@ public class PedidoLoteResponseDto {
     private Integer id;
     private Integer fkLote;
     private Integer fkPedido;
+    private Integer qtdVelas;
 }

@@ -38,14 +38,13 @@ public class PedidoService {
 
     public PedidoResponseDto criarPedido(PedidoRequestDto pedidoRequest) {
         PedidoLoteRequestDto pedidoLote = new PedidoLoteRequestDto();
-        LoteResponseDto loteResponseDto = loteService.obterLotePorId(pedidoRequest.getLoteId());
 
         Pedido pedido = pedidoMapper.toEntity(pedidoRequest);
         Pedido pedidoSave = pedidoRepository.save(pedido);
 
         pedidoLote.setPedidoId(pedidoSave.getId());
         pedidoLote.setLoteId(pedidoRequest.getLoteId());
-        pedidoLote.setQuantidade(loteResponseDto.getQuantidade());
+        pedidoLote.setQuantidade(pedidoRequest.getQtdVelas());
 
         pedidoLoteService.createPedidoLote(pedidoLote);
 
@@ -108,4 +107,5 @@ public class PedidoService {
 
         return vendasResponse;
     }
+
 }

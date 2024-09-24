@@ -33,4 +33,7 @@ public class PedidoRequestDto {
 
     @NotNull(message = "O ID do lote é obrigatório")
     private Integer loteId;
+
+    @NotNull(message = "A quantidade de velas do pedido é obrigatório")
+    private Integer qtdVelas;
 }

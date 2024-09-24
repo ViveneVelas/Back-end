@@ -44,6 +44,7 @@ public class PedidoLoteMapper {
         pedidoLoteResponseDto.setId(pedidoLote.getId());
         pedidoLoteResponseDto.setFkPedido(pedidoLote.getPedido().getId());
         pedidoLoteResponseDto.setFkLote(pedidoLote.getLote().getId());
+        pedidoLoteResponseDto.setQtdVelas(pedidoLote.getQuantidade());
 
         return pedidoLoteResponseDto;
     }
