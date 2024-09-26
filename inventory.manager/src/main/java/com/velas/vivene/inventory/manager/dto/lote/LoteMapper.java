@@ -31,4 +31,19 @@ public class LoteMapper {
 
         return dto;
     }
+
+    public LoteResponseDto toResponseDTO(Lote entity, byte[] arqPng) {
+        LoteResponseDto dto = new LoteResponseDto();
+        dto.setId(entity.getId());
+        dto.setQuantidade(entity.getQuantidade());
+        dto.setDataFabricacao(entity.getDataFabricacao());
+        dto.setDataValidade(entity.getDataValidade());
+        dto.setLocalizacao(entity.getLocalizacao());
+        Integer id = entity.getVela().getId();
+        dto.setFkVela(id);
+        dto.setNomeArq(entity.getNomeQrCode());
+        dto.setPngQrcode(arqPng);
+
+        return dto;
+    }
 }

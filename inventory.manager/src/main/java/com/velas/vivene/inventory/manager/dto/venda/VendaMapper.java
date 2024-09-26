@@ -1,6 +1,5 @@
 package com.velas.vivene.inventory.manager.dto.venda;
 
-import com.velas.vivene.inventory.manager.commons.Pagamento;
 import com.velas.vivene.inventory.manager.entity.Pedido;
 import com.velas.vivene.inventory.manager.entity.Venda;
 import com.velas.vivene.inventory.manager.repository.PedidoRepository;

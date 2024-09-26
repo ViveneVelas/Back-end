@@ -31,6 +31,9 @@ public class Lote {
     @Column(name = "localizacao")
     private Integer localizacao;
 
+    @Column(name = "nome_qr_code")
+    private String nomeQrCode;
+
     @OneToMany(mappedBy = "lote", cascade = CascadeType.ALL)
     private List<PedidoLote> pedidoLotes = new ArrayList<>();
 

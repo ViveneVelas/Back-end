@@ -1,5 +1,10 @@
 package com.velas.vivene.inventory.manager.controller;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.velas.vivene.inventory.manager.dto.lote.LoteRequestDto;
 import com.velas.vivene.inventory.manager.dto.lote.LoteResponseDto;
 import com.velas.vivene.inventory.manager.dto.lotesproximodovencimento.LotesProximoDoVencimentoResponse;
@@ -9,10 +14,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -26,10 +37,11 @@ public class LoteController {
 
     @Operation(summary = "Cria um novo lote")
     @PostMapping
-    public ResponseEntity<LoteResponseDto> createLote(@Valid @RequestBody LoteRequestDto loteRequestDto) {
+    public ResponseEntity<LoteResponseDto> createLote(@Valid @RequestBody LoteRequestDto loteRequestDto) throws IOException, WriterException {
         LoteResponseDto loteResponseDto = loteService.criarLote(loteRequestDto);
-        return new ResponseEntity<>(loteResponseDto, HttpStatus.CREATED);
+        return ResponseEntity.ok().body(loteResponseDto);
     }
+
 
     @Operation(summary = "Atualiza um lote")
     @PutMapping("/{id}")

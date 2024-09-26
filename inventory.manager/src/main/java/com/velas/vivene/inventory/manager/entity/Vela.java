@@ -1,6 +1,5 @@
 package com.velas.vivene.inventory.manager.entity;
 
-import com.velas.vivene.inventory.manager.commons.Tamanho;
 import jakarta.persistence.*;
 import lombok.*;
 
