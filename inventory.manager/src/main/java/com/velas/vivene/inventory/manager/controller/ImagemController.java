@@ -1,8 +1,14 @@
 package com.velas.vivene.inventory.manager.controller;
 
 
+import com.velas.vivene.inventory.manager.dto.usuario.UsuarioResponseDto;
 import com.velas.vivene.inventory.manager.entity.Imagem;
 import com.velas.vivene.inventory.manager.infraService.S3BucketService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
