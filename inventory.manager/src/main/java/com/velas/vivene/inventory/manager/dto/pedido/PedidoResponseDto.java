@@ -1,6 +1,7 @@
 package com.velas.vivene.inventory.manager.dto.pedido;
 
 
+import com.velas.vivene.inventory.manager.dto.pedidolote.PedidoLoteResponseDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,4 +19,5 @@ public class PedidoResponseDto {
     private String status;
     private Integer clienteId;
     private String clienteNome;
+    private PedidoLoteResponseDto pedidoLoteResponseDto;
 }
