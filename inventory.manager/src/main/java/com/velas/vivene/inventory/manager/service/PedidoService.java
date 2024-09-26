@@ -1,6 +1,6 @@
 package com.velas.vivene.inventory.manager.service;
 
-import com.velas.vivene.inventory.manager.commons.Pagamento;
+import com.velas.vivene.inventory.manager.commons.enuns.Pagamento;
 import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoMapper;
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoRequestDto;
@@ -9,7 +9,6 @@ import com.velas.vivene.inventory.manager.dto.pedidolote.PedidoLoteRequestDto;
 import com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses.QuantidadeVendasSeisMesesMapper;
 import com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses.QuantidadeVendasSeisMesesResponse;
 import com.velas.vivene.inventory.manager.entity.*;
-import com.velas.vivene.inventory.manager.repository.ClienteRepository;
 import com.velas.vivene.inventory.manager.repository.LoteRepository;
 import com.velas.vivene.inventory.manager.repository.PedidoRepository;
 import com.velas.vivene.inventory.manager.repository.QuantidadeVendasSeisMesesRepository;

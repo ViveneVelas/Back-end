@@ -1,6 +1,5 @@
 package com.velas.vivene.inventory.manager.dto.vela;
 
-import com.velas.vivene.inventory.manager.commons.Tamanho;
 import lombok.Data;
 
 @Data
