@@ -1,6 +1,6 @@
 package com.velas.vivene.inventory.manager.commons;
 
-import com.velas.vivene.inventory.manager.entity.ClientesMaisCompras;
+import com.velas.vivene.inventory.manager.entity.view.ClientesMaisCompras;
 
 import java.io.*;
 import java.time.LocalDateTime;

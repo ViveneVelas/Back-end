@@ -1,4 +1,4 @@
-package com.velas.vivene.inventory.manager.entity;
+package com.velas.vivene.inventory.manager.entity.view;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

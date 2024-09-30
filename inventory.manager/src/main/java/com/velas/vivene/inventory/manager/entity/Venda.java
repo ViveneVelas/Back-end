@@ -7,7 +7,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "Vendas")
+@Table(name = "vendas")
 public class Venda {
 
     @Id
@@ -18,7 +18,7 @@ public class Venda {
     @JoinColumn(name = "fk_pedido")
     private Pedido pedido;
 
-    @Column(name = "metodoPag")
+    @Column(name = "metodo_pag", length = 45)
     private String metodoPag;
 
 }

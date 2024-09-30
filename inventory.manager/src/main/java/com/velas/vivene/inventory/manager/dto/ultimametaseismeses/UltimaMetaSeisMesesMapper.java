@@ -1,6 +1,6 @@
 package com.velas.vivene.inventory.manager.dto.ultimametaseismeses;
 
-import com.velas.vivene.inventory.manager.entity.UltimaMetaSeisMeses;
+import com.velas.vivene.inventory.manager.entity.view.UltimaMetaSeisMeses;
 import org.springframework.stereotype.Component;
 
 @Component

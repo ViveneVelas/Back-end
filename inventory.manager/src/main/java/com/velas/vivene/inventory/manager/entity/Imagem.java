@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "Imagem")
+@Table(name = "imagem")
 public class Imagem {
 
     @Id
@@ -15,7 +15,7 @@ public class Imagem {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "referencia")
+    @Column(name = "referencia", length = 45)
     private String referencia;
 
 }

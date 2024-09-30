@@ -9,15 +9,12 @@ import com.velas.vivene.inventory.manager.dto.cliente.ClienteResponseDto;
 import com.velas.vivene.inventory.manager.dto.clientesmaiscompras.ClienteMaisComprasResponse;
 import com.velas.vivene.inventory.manager.dto.clientesmaiscompras.ClientesMaisComprasMapper;
 import com.velas.vivene.inventory.manager.entity.Cliente;
-import com.velas.vivene.inventory.manager.entity.ClientesMaisCompras;
+import com.velas.vivene.inventory.manager.entity.view.ClientesMaisCompras;
 import com.velas.vivene.inventory.manager.repository.ClienteRepository;
 import com.velas.vivene.inventory.manager.repository.ClientesMaisComprasRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

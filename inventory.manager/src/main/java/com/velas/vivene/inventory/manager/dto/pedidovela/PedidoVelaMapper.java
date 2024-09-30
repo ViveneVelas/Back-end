@@ -1,49 +1,49 @@
-package com.velas.vivene.inventory.manager.dto.pedidolote;
+package com.velas.vivene.inventory.manager.dto.pedidovela;
 
 import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
-import com.velas.vivene.inventory.manager.entity.Lote;
 import com.velas.vivene.inventory.manager.entity.Pedido;
-import com.velas.vivene.inventory.manager.entity.PedidoLote;
-import com.velas.vivene.inventory.manager.repository.LoteRepository;
+import com.velas.vivene.inventory.manager.entity.PedidoVela;
+import com.velas.vivene.inventory.manager.entity.Vela;
 import com.velas.vivene.inventory.manager.repository.PedidoRepository;
+import com.velas.vivene.inventory.manager.repository.VelaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class PedidoLoteMapper {
-    private final LoteRepository loteRepository;
+public class PedidoVelaMapper {
+    private final VelaRepository velaRepository;
     private final PedidoRepository pedidoRepository;
 
-    public PedidoLote toEntity(PedidoLoteRequestDto pedidoLoteRequestDto) {
+    public PedidoVela toEntity(PedidoVelaRequestDto pedidoLoteRequestDto) {
         if (pedidoLoteRequestDto == null) {
             return null;
         }
 
-        Lote lote = loteRepository.findById(pedidoLoteRequestDto.getLoteId())
-                .orElseThrow(() -> new ResourceNotFoundException("Lote não encontrado com o id: " + pedidoLoteRequestDto.getLoteId()));
+        Vela vela = velaRepository.findById(pedidoLoteRequestDto.getVelaId())
+                .orElseThrow(() -> new ResourceNotFoundException("Lote não encontrado com o id: " + pedidoLoteRequestDto.getVelaId()));
 
         Pedido pedido = pedidoRepository.findById(pedidoLoteRequestDto.getPedidoId())
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado com o id: " + pedidoLoteRequestDto.getPedidoId()));
 
-        PedidoLote pedidoLote = new PedidoLote();
+        PedidoVela pedidoLote = new PedidoVela();
 
-        pedidoLote.setLote(lote);
+        pedidoLote.setVela(vela);
         pedidoLote.setPedido(pedido);
         pedidoLote.setQuantidade(pedidoLoteRequestDto.getQuantidade());
 
         return pedidoLote;
     }
 
-    public PedidoLoteResponseDto toResponseDto(PedidoLote pedidoLote) {
+    public PedidoVelaResponseDto toResponseDto(PedidoVela pedidoLote) {
         if (pedidoLote == null) {
             return null;
         }
 
-        PedidoLoteResponseDto pedidoLoteResponseDto = new PedidoLoteResponseDto();
+        PedidoVelaResponseDto pedidoLoteResponseDto = new PedidoVelaResponseDto();
         pedidoLoteResponseDto.setId(pedidoLote.getId());
         pedidoLoteResponseDto.setFkPedido(pedidoLote.getPedido().getId());
-        pedidoLoteResponseDto.setFkLote(pedidoLote.getLote().getId());
+        pedidoLoteResponseDto.setFkVela(pedidoLote.getVela().getId());
         pedidoLoteResponseDto.setQtdVelas(pedidoLote.getQuantidade());
 
         return pedidoLoteResponseDto;

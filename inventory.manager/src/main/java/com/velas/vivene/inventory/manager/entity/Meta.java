@@ -9,19 +9,19 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "Metas Semanais")
+@Table(name = "metas")
 public class Meta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "data início")
+    @Column(name = "data_inicio")
     private LocalDate dataInicio;
 
-    @Column(name = "data final")
+    @Column(name = "data_final")
     private LocalDate dataFinal;
 
-    @Column(name = "Quantidade de vendas")
+    @Column(name = "qtd_vendas")
     private Integer qtdVendas;
 }

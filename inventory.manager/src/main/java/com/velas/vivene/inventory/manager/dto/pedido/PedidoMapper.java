@@ -1,11 +1,11 @@
 package com.velas.vivene.inventory.manager.dto.pedido;
 
-import com.velas.vivene.inventory.manager.dto.pedidolote.PedidoLoteResponseDto;
+import com.velas.vivene.inventory.manager.dto.pedidovela.PedidoVelaResponseDto;
 import com.velas.vivene.inventory.manager.entity.Cliente;
 import com.velas.vivene.inventory.manager.entity.Pedido;
-import com.velas.vivene.inventory.manager.entity.PedidoLote;
+import com.velas.vivene.inventory.manager.entity.PedidoVela;
 import com.velas.vivene.inventory.manager.repository.ClienteRepository;
-import com.velas.vivene.inventory.manager.repository.PedidoLoteRepository;
+import com.velas.vivene.inventory.manager.repository.PedidoVelaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +16,7 @@ import java.util.Optional;
 public class PedidoMapper {
 
     private final ClienteRepository clienteRepository;
-    private final PedidoLoteRepository pedidoLoteRepository;
+    private final PedidoVelaRepository pedidoLoteRepository;
 
     public Pedido toEntity(PedidoRequestDto pedidoRequestDTO) {
         Pedido pedido = new Pedido();
@@ -45,13 +45,13 @@ public class PedidoMapper {
         responseDTO.setClienteId(pedido.getCliente().getId());
         responseDTO.setClienteNome(pedido.getCliente().getNome());
 
-        Optional<PedidoLote> pedidoLote = pedidoLoteRepository.findByPedidoId(pedido.getId());  // Correção aqui
+        Optional<PedidoVela> pedidoLote = pedidoLoteRepository.findByPedidoId(pedido.getId());  // Correção aqui
 
         pedidoLote.ifPresent(lote -> {
-            PedidoLoteResponseDto pedidoLoteDto = new PedidoLoteResponseDto();
+            PedidoVelaResponseDto pedidoLoteDto = new PedidoVelaResponseDto();
             pedidoLoteDto.setId(lote.getId());
             pedidoLoteDto.setFkPedido(lote.getPedido().getId());  // Correção dos campos
-            pedidoLoteDto.setFkLote(lote.getLote().getId());  // Correção dos campos
+            pedidoLoteDto.setFkVela(lote.getVela().getId());  // Correção dos campos
             pedidoLoteDto.setQtdVelas(lote.getQuantidade());  // Adicionando a quantidade
             responseDTO.setPedidoLoteResponseDto(pedidoLoteDto);
         });

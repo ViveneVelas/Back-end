@@ -31,7 +31,4 @@ public class Lote {
     @Column(name = "localizacao")
     private Integer localizacao;
 
-    @OneToMany(mappedBy = "lote", cascade = CascadeType.ALL)
-    private List<PedidoLote> pedidoLotes = new ArrayList<>();
-
 }

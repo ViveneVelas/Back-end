@@ -1,6 +1,6 @@
 package com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses;
 
-import com.velas.vivene.inventory.manager.entity.QuantidadeVendasSeisMeses;
+import com.velas.vivene.inventory.manager.entity.view.QuantidadeVendasSeisMeses;
 import org.springframework.stereotype.Component;
 
 @Component

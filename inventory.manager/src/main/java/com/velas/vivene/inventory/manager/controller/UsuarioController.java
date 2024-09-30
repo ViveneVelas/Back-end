@@ -1,6 +1,5 @@
 package com.velas.vivene.inventory.manager.controller;
 
-import com.velas.vivene.inventory.manager.dto.pedidolote.PedidoLoteResponseDto;
 import com.velas.vivene.inventory.manager.dto.usuario.UsuarioRequestDto;
 import com.velas.vivene.inventory.manager.dto.usuario.UsuarioResponseDto;
 import com.velas.vivene.inventory.manager.service.UsuarioService;

@@ -1,12 +1,12 @@
-package com.velas.vivene.inventory.manager.dto.pedidolote;
+package com.velas.vivene.inventory.manager.dto.pedidovela;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class PedidoLoteRequestDto {
+public class PedidoVelaRequestDto {
     @NotNull
-    private Integer loteId;
+    private Integer velaId;
 
     @NotNull
     private Integer pedidoId;
