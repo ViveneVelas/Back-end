@@ -1,5 +1,6 @@
 package com.velas.vivene.inventory.manager.controller;
 
+import com.velas.vivene.inventory.manager.dto.clientesmaiscompras.ClienteMaisComprasResponse;
 import com.velas.vivene.inventory.manager.dto.top5velasmaisvendidas.Top5VelasMaisVendidasResponse;
 import com.velas.vivene.inventory.manager.dto.vela.VelaRequestDto;
 import com.velas.vivene.inventory.manager.dto.vela.VelaResponseDto;
@@ -13,9 +14,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -187,5 +192,28 @@ public class VelaController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/arq-criar/top-cinco-velas")
+    @Operation(summary = "Cria um arquivo csv Top 5 velas", description = """
+           # Cria um arquivo de 5 velas mais vendidas
+           ---
+           Esse endpoint cria um arquivo de csv das 5 velas mais vendidas
+           ---
+           Nota:
+           - Nome do arquivo é obrigatorio
+           - Não informar tipo no final (.txt ou .csv ou derivados)
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Clientes encontrados com sucesso (OK).",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ClienteMaisComprasResponse.class))})})
+    public ResponseEntity<byte[]> criarTxtClientes(@RequestParam String nomeArq) throws IOException {
+        byte[] arquivo = velaService.criarArqCsv();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", nomeArq + ".txt");
+
+        return new ResponseEntity<>(arquivo, headers, HttpStatus.OK);
     }
 }
