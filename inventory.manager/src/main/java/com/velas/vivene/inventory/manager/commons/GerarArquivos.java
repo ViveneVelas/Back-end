@@ -2,19 +2,16 @@ package com.velas.vivene.inventory.manager.commons;
 
 import com.velas.vivene.inventory.manager.entity.ClientesMaisCompras;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GerarArquivos {
 
-    public static void gerarArquivoTxt(String nomeArq, List<ClientesMaisCompras> clientes) throws IOException {
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(nomeArq));
+    public static byte[] gerarArquivoTxt(List<ClientesMaisCompras> clientes) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream))) {
 
             String header = gerarHeader();
             writer.write(header);
@@ -29,10 +26,11 @@ public class GerarArquivos {
             String trailer = gerarTrailer(clientes.size());
             writer.write(trailer);
 
-            writer.close();
+            writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return outputStream.toByteArray();
     }
 
     private static String gerarHeader() {

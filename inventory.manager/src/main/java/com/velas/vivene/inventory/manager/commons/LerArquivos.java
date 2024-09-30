@@ -2,9 +2,8 @@ package com.velas.vivene.inventory.manager.commons;
 
 import com.velas.vivene.inventory.manager.entity.ClientesMaisCompras;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -12,11 +11,15 @@ import java.util.List;
 
 public class LerArquivos {
 
-    public static void importarArquivoTxt(String nomeArq) throws IOException {
+    public static void importarArquivoTxt(byte[] nomeArq) throws IOException {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(nomeArq));
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(new ByteArrayInputStream(nomeArq), StandardCharsets.UTF_8)
+            );
+
             List<ClientesMaisCompras> clientes = new ArrayList<>();
             String linha;
+
             System.out.println("\nIniciando Leitura:\n");
             while ((linha = reader.readLine()) != null) {
                 String tipoRegistro = linha.substring(0, 2);

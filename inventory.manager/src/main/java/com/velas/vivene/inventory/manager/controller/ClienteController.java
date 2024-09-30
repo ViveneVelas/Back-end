@@ -14,9 +14,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -155,25 +158,30 @@ public class ClienteController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Clientes encontrados com sucesso (OK).",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ClienteMaisComprasResponse.class))})})
-    public void criarTxtClientes(@Parameter String nomeArq) throws IOException {
-        clienteService.criarArqTxt(nomeArq);
+    public ResponseEntity<byte[]> criarTxtClientes(@RequestParam String nomeArq) throws IOException {
+        byte[] arquivo = clienteService.criarArqTxt();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", nomeArq + ".txt");
+
+        return new ResponseEntity<>(arquivo, headers, HttpStatus.OK);
     }
 
-    @GetMapping("/arq-ler/clientes-mais-compras")
-    @Operation(summary = "Le um arquivo txt clientes com mais compras", description = """
-           # Le um arquivo de clientes com mais compras
+    @PostMapping("/arq-ler/clientes-mais-compras")
+    @Operation(summary = "Lê um arquivo txt de clientes com mais compras", description = """
+           # Lê um arquivo de clientes com mais compras
            ---
-           Esse endpoint le um arquivo de texto clientes com mais compras
+           Esse endpoint lê um arquivo de texto clientes com mais compras enviado como `byte[]`
            ---
            Nota:
-           - Nome do arquivo é obrigatorio
-           - Não informar tipo no final (.txt ou .csv ou derivados)
+           - Enviar o arquivo em formato `.txt` no corpo da requisição como um `byte[]`.
             """)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Clientes encontrados com sucesso (OK).",
+            @ApiResponse(responseCode = "200", description = "Arquivo lido com sucesso (OK).",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ClienteMaisComprasResponse.class))})})
-    public void lerTxtClientes(@Parameter String nomeArq) throws IOException {
-        clienteService.lerArqTxt(nomeArq);
+    public void lerTxtClientes(@RequestBody byte[] fileContent) throws IOException {
+        clienteService.lerArqTxt(fileContent);
     }
 
 }

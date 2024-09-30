@@ -14,7 +14,10 @@ import com.velas.vivene.inventory.manager.repository.ClienteRepository;
 import com.velas.vivene.inventory.manager.repository.ClientesMaisComprasRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,22 +82,12 @@ public class ClienteService {
         return clientesResponse;
     }
 
-    public void criarArqTxt(String nomeArq) throws IOException {
+    public byte[] criarArqTxt() throws IOException {
         List<ClientesMaisCompras> clientes = clientesMaisComprasRepository.findAll();
-        nomeArq = nomeArq + ".txt";
-        try {
-            GerarArquivos.gerarArquivoTxt(nomeArq,clientes);
-        }catch (Exception exception){
-            throw exception;
-        }
+        return GerarArquivos.gerarArquivoTxt(clientes);
     }
 
-    public void lerArqTxt(String nomeArq) throws IOException {
-        nomeArq = nomeArq + ".txt";
-        try {
-            LerArquivos.importarArquivoTxt(nomeArq);
-        }catch (Exception exception){
-            throw exception;
-        }
+    public void lerArqTxt(byte[] file) throws IOException {
+        LerArquivos.importarArquivoTxt(file);
     }
 }
