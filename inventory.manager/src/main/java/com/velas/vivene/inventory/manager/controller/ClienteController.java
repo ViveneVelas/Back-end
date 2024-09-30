@@ -6,6 +6,7 @@ import com.velas.vivene.inventory.manager.dto.clientesmaiscompras.ClienteMaisCom
 import com.velas.vivene.inventory.manager.dto.lote.LoteResponseDto;
 import com.velas.vivene.inventory.manager.service.ClienteService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,10 +14,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -138,6 +143,45 @@ public class ClienteController {
     public ResponseEntity<List<ClienteMaisComprasResponse>> getClienteMaisCompras() {
         List<ClienteMaisComprasResponse> responseDTO = clienteService.getClienteMaisCompras();
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
+    @PostMapping("/arq-criar/clientes-mais-compras")
+    @Operation(summary = "Cria um arquivo txt clientes com mais compras", description = """
+           # Cria um arquivo de clientes com mais compras
+           ---
+           Esse endpoint cria um arquivo de texto clientes com mais compras
+           ---
+           Nota:
+           - Nome do arquivo é obrigatorio
+           - Não informar tipo no final (.txt ou .csv ou derivados)
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Clientes encontrados com sucesso (OK).",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ClienteMaisComprasResponse.class))})})
+    public ResponseEntity<byte[]> criarTxtClientes(@RequestParam String nomeArq) throws IOException {
+        byte[] arquivo = clienteService.criarArqTxt();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", nomeArq + ".txt");
+
+        return new ResponseEntity<>(arquivo, headers, HttpStatus.OK);
+    }
+
+    @PostMapping("/arq-ler/clientes-mais-compras")
+    @Operation(summary = "Lê um arquivo txt de clientes com mais compras", description = """
+           # Lê um arquivo de clientes com mais compras
+           ---
+           Esse endpoint lê um arquivo de texto clientes com mais compras enviado como `byte[]`
+           ---
+           Nota:
+           - Enviar o arquivo em formato `.txt` no corpo da requisição como um `byte[]`.
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Arquivo lido com sucesso (OK).",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ClienteMaisComprasResponse.class))})})
+    public void lerTxtClientes(@RequestBody byte[] fileContent) throws IOException {
+        clienteService.lerArqTxt(fileContent);
     }
 
 }

@@ -6,9 +6,8 @@ import com.velas.vivene.inventory.manager.dto.lote.LoteRequestDto;
 import com.velas.vivene.inventory.manager.dto.lote.LoteResponseDto;
 import com.velas.vivene.inventory.manager.dto.lotesproximodovencimento.LotesProximoDoVencimentoResponse;
 import com.velas.vivene.inventory.manager.dto.lotesproximodovencimento.LotesProximosDoVencimentoMapper;
-import com.velas.vivene.inventory.manager.dto.vela.VelaResponseDto;
 import com.velas.vivene.inventory.manager.entity.Lote;
-import com.velas.vivene.inventory.manager.entity.LotesProximoDoVencimento;
+import com.velas.vivene.inventory.manager.entity.view.LotesProximoDoVencimento;
 import com.velas.vivene.inventory.manager.entity.Vela;
 import com.velas.vivene.inventory.manager.repository.LoteRepository;
 import com.velas.vivene.inventory.manager.repository.LotesProximoDoVencimentoRepository;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

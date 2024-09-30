@@ -1,4 +1,4 @@
-package com.velas.vivene.inventory.manager.entity;
+package com.velas.vivene.inventory.manager.entity.view;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,12 +11,12 @@ import lombok.Setter;
 @Entity
 public class TopCincoVelas {
     @Id
-    @Column(name = "id")
+    @Column(name = "vela_id")
     private Long id;
 
-    @Column(name = "Nome_da_vela")
+    @Column(name = "vela_nome")
     private String nomeVela;
 
-    @Column(name = "Total_Vendido")
+    @Column(name = "total_vendido")
     private Integer totalVendido;
 }

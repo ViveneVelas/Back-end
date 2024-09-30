@@ -7,12 +7,11 @@ import com.velas.vivene.inventory.manager.dto.meta.MetaResponseDto;
 import com.velas.vivene.inventory.manager.dto.ultimametaseismeses.UltimaMetaSeisMesesMapper;
 import com.velas.vivene.inventory.manager.dto.ultimametaseismeses.UltimaMetaSeisMesesResponse;
 import com.velas.vivene.inventory.manager.entity.Meta;
-import com.velas.vivene.inventory.manager.entity.UltimaMetaSeisMeses;
+import com.velas.vivene.inventory.manager.entity.view.UltimaMetaSeisMeses;
 import com.velas.vivene.inventory.manager.repository.MetaRepository;
 import com.velas.vivene.inventory.manager.repository.UltimaMetaSeisMesesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.util.ArrayList;
 import java.util.List;

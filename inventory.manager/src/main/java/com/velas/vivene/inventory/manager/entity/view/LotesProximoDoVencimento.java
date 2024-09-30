@@ -1,4 +1,4 @@
-package com.velas.vivene.inventory.manager.entity;
+package com.velas.vivene.inventory.manager.entity.view;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,12 +17,12 @@ public class LotesProximoDoVencimento {
     private Integer id;
     @Column(name = "nome_da_vela")
     private String nomeVela;
-    @Column(name = "dt_fabricacao")
+    @Column(name = "data_fabricacao")
     private LocalDate dataFabricacao;
-    @Column(name = "dt_validade")
+    @Column(name = "data_validade")
     private LocalDate dataValidade;
-    @Column(name = "qtd_disponivel")
+    @Column(name = "quantidade")
     private Integer qtdDisponivel;
-    @Column(name = "qtd_vencimento")
-    private Integer diasVencimento;
+    @Column(name = "localizacao")
+    private Integer localizacao;
 }

@@ -1,13 +1,11 @@
 package com.velas.vivene.inventory.manager.dto.pedido;
 
-import com.velas.vivene.inventory.manager.dto.pedidolote.PedidoLoteRequestDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @Setter

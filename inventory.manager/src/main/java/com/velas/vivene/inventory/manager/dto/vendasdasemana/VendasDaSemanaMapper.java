@@ -1,6 +1,6 @@
 package com.velas.vivene.inventory.manager.dto.vendasdasemana;
 
-import com.velas.vivene.inventory.manager.entity.VendasDaSemana;
+import com.velas.vivene.inventory.manager.entity.view.VendasDaSemana;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

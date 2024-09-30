@@ -1,7 +1,6 @@
 package com.velas.vivene.inventory.manager.service;
 
 import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
-import com.velas.vivene.inventory.manager.datastructure.Node;
 import com.velas.vivene.inventory.manager.dto.top5velasmaisvendidas.Top5VelasMaisVendidasMapper;
 import com.velas.vivene.inventory.manager.dto.top5velasmaisvendidas.Top5VelasMaisVendidasResponse;
 import com.velas.vivene.inventory.manager.dto.vela.VelaMapper;
@@ -9,9 +8,9 @@ import com.velas.vivene.inventory.manager.dto.vela.VelaRequestDto;
 import com.velas.vivene.inventory.manager.dto.vela.VelaResponseDto;
 import com.velas.vivene.inventory.manager.dto.velamaisvendida.VelaMaisVendidaMapper;
 import com.velas.vivene.inventory.manager.dto.velamaisvendida.VelaMaisVendidaResponse;
-import com.velas.vivene.inventory.manager.entity.TopCincoVelas;
+import com.velas.vivene.inventory.manager.entity.view.TopCincoVelas;
 import com.velas.vivene.inventory.manager.entity.Vela;
-import com.velas.vivene.inventory.manager.entity.VelaMaisVendida;
+import com.velas.vivene.inventory.manager.entity.view.VelaMaisVendida;
 import com.velas.vivene.inventory.manager.repository.Top5VelasMaisVendidasRepository;
 import com.velas.vivene.inventory.manager.repository.VelaMaisVendidaRepository;
 import com.velas.vivene.inventory.manager.repository.VelaRepository;

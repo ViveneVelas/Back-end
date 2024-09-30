@@ -3,15 +3,14 @@ package com.velas.vivene.inventory.manager.service;
 import com.velas.vivene.inventory.manager.commons.Pagamento;
 import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
 import com.velas.vivene.inventory.manager.dto.lote.LoteMapper;
-import com.velas.vivene.inventory.manager.dto.lote.LoteResponseDto;
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoMapper;
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoRequestDto;
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoResponseDto;
-import com.velas.vivene.inventory.manager.dto.pedidolote.PedidoLoteRequestDto;
+import com.velas.vivene.inventory.manager.dto.pedidovela.PedidoVelaRequestDto;
 import com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses.QuantidadeVendasSeisMesesMapper;
 import com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses.QuantidadeVendasSeisMesesResponse;
 import com.velas.vivene.inventory.manager.entity.*;
-import com.velas.vivene.inventory.manager.repository.ClienteRepository;
+import com.velas.vivene.inventory.manager.entity.view.QuantidadeVendasSeisMeses;
 import com.velas.vivene.inventory.manager.repository.LoteRepository;
 import com.velas.vivene.inventory.manager.repository.PedidoRepository;
 import com.velas.vivene.inventory.manager.repository.QuantidadeVendasSeisMesesRepository;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,23 +28,23 @@ public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final PedidoMapper pedidoMapper;
     private final LoteRepository loteRepository;
-    private final PedidoLoteService pedidoLoteService;
+    private final PedidoVelaService pedidoLoteService;
     private final QuantidadeVendasSeisMesesRepository quantidadeVendasSeisMesesRepository;
     private final QuantidadeVendasSeisMesesMapper quantidadeVendasSeisMesesMapper;
     private final LoteMapper loteMapper;
     private final LoteService loteService;
 
     public PedidoResponseDto criarPedido(PedidoRequestDto pedidoRequest) {
-        PedidoLoteRequestDto pedidoLote = new PedidoLoteRequestDto();
+        PedidoVelaRequestDto pedidoLote = new PedidoVelaRequestDto();
 
         Pedido pedido = pedidoMapper.toEntity(pedidoRequest);
         Pedido pedidoSave = pedidoRepository.save(pedido);
 
         pedidoLote.setPedidoId(pedidoSave.getId());
-        pedidoLote.setLoteId(pedidoRequest.getLoteId());
+        pedidoLote.setVelaId(pedidoRequest.getLoteId());
         pedidoLote.setQuantidade(pedidoRequest.getQtdVelas());
 
-        pedidoLoteService.createPedidoLote(pedidoLote);
+        pedidoLoteService.createPedidoVela(pedidoLote);
 
         return pedidoMapper.toResponseDTO(pedidoSave);
     }

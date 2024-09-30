@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "Pedido_lote")
-public class PedidoLote {
+@Table(name = "pedido_vela")
+public class PedidoVela {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -18,8 +18,8 @@ public class PedidoLote {
     private Pedido pedido;
 
     @ManyToOne
-    @JoinColumn(name = "fk_lote", nullable = false)
-    private Lote lote;
+    @JoinColumn(name = "fk_vela", nullable = false)
+    private Vela vela;
 
     @Column(name = "quantidade")
     private Integer quantidade;

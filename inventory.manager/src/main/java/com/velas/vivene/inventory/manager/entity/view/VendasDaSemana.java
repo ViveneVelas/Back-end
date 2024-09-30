@@ -1,4 +1,4 @@
-package com.velas.vivene.inventory.manager.entity;
+package com.velas.vivene.inventory.manager.entity.view;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Setter
 public class VendasDaSemana {
     @Id
-    @Column(name = "venda_id")
+    @Column(name = "id")
     private Integer vendaId;
 
     @Column(name = "metodo_de_pagamento")

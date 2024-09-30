@@ -6,7 +6,7 @@ import com.velas.vivene.inventory.manager.dto.venda.VendaRequestDto;
 import com.velas.vivene.inventory.manager.dto.venda.VendaResponseDto;
 import com.velas.vivene.inventory.manager.dto.vendasdasemana.VendasDaSemanaMapper;
 import com.velas.vivene.inventory.manager.dto.vendasdasemana.VendasDaSemanaResponseDto;
-import com.velas.vivene.inventory.manager.entity.QtdVendasDaSemana;
+import com.velas.vivene.inventory.manager.entity.view.QtdVendasDaSemana;
 import com.velas.vivene.inventory.manager.entity.Venda;
 import com.velas.vivene.inventory.manager.repository.QtdVendasDaSemanaRepository;
 import com.velas.vivene.inventory.manager.repository.VendaRepository;
