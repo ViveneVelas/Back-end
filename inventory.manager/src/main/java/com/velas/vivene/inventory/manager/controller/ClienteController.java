@@ -6,6 +6,7 @@ import com.velas.vivene.inventory.manager.dto.clientesmaiscompras.ClienteMaisCom
 import com.velas.vivene.inventory.manager.dto.lote.LoteResponseDto;
 import com.velas.vivene.inventory.manager.service.ClienteService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -138,6 +140,40 @@ public class ClienteController {
     public ResponseEntity<List<ClienteMaisComprasResponse>> getClienteMaisCompras() {
         List<ClienteMaisComprasResponse> responseDTO = clienteService.getClienteMaisCompras();
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
+    @PostMapping("/arq-criar/clientes-mais-compras")
+    @Operation(summary = "Cria um arquivo txt clientes com mais compras", description = """
+           # Cria um arquivo de clientes com mais compras
+           ---
+           Esse endpoint cria um arquivo de texto clientes com mais compras
+           ---
+           Nota:
+           - Nome do arquivo é obrigatorio
+           - Não informar tipo no final (.txt ou .csv ou derivados)
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Clientes encontrados com sucesso (OK).",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ClienteMaisComprasResponse.class))})})
+    public void criarTxtClientes(@Parameter String nomeArq) throws IOException {
+        clienteService.criarArqTxt(nomeArq);
+    }
+
+    @GetMapping("/arq-ler/clientes-mais-compras")
+    @Operation(summary = "Le um arquivo txt clientes com mais compras", description = """
+           # Le um arquivo de clientes com mais compras
+           ---
+           Esse endpoint le um arquivo de texto clientes com mais compras
+           ---
+           Nota:
+           - Nome do arquivo é obrigatorio
+           - Não informar tipo no final (.txt ou .csv ou derivados)
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Clientes encontrados com sucesso (OK).",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ClienteMaisComprasResponse.class))})})
+    public void lerTxtClientes(@Parameter String nomeArq) throws IOException {
+        clienteService.lerArqTxt(nomeArq);
     }
 
 }

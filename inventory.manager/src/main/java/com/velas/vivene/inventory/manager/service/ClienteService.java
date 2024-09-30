@@ -1,5 +1,7 @@
 package com.velas.vivene.inventory.manager.service;
 
+import com.velas.vivene.inventory.manager.commons.GerarArquivos;
+import com.velas.vivene.inventory.manager.commons.LerArquivos;
 import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
 import com.velas.vivene.inventory.manager.dto.cliente.ClienteMapper;
 import com.velas.vivene.inventory.manager.dto.cliente.ClienteRequestDto;
@@ -13,6 +15,7 @@ import com.velas.vivene.inventory.manager.repository.ClientesMaisComprasReposito
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,5 +77,24 @@ public class ClienteService {
         }
 
         return clientesResponse;
+    }
+
+    public void criarArqTxt(String nomeArq) throws IOException {
+        List<ClientesMaisCompras> clientes = clientesMaisComprasRepository.findAll();
+        nomeArq = nomeArq + ".txt";
+        try {
+            GerarArquivos.gerarArquivoTxt(nomeArq,clientes);
+        }catch (Exception exception){
+            throw exception;
+        }
+    }
+
+    public void lerArqTxt(String nomeArq) throws IOException {
+        nomeArq = nomeArq + ".txt";
+        try {
+            LerArquivos.importarArquivoTxt(nomeArq);
+        }catch (Exception exception){
+            throw exception;
+        }
     }
 }
