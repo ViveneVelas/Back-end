@@ -1,5 +1,7 @@
 package com.velas.vivene.inventory.manager.service;
 
+import com.velas.vivene.inventory.manager.commons.GerarArquivosCsv;
+import com.velas.vivene.inventory.manager.commons.GerarArquivosTxt;
 import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
 import com.velas.vivene.inventory.manager.dto.top5velasmaisvendidas.Top5VelasMaisVendidasMapper;
 import com.velas.vivene.inventory.manager.dto.top5velasmaisvendidas.Top5VelasMaisVendidasResponse;
@@ -8,6 +10,7 @@ import com.velas.vivene.inventory.manager.dto.vela.VelaRequestDto;
 import com.velas.vivene.inventory.manager.dto.vela.VelaResponseDto;
 import com.velas.vivene.inventory.manager.dto.velamaisvendida.VelaMaisVendidaMapper;
 import com.velas.vivene.inventory.manager.dto.velamaisvendida.VelaMaisVendidaResponse;
+import com.velas.vivene.inventory.manager.entity.view.ClientesMaisCompras;
 import com.velas.vivene.inventory.manager.entity.view.TopCincoVelas;
 import com.velas.vivene.inventory.manager.entity.Vela;
 import com.velas.vivene.inventory.manager.entity.view.VelaMaisVendida;
@@ -17,6 +20,7 @@ import com.velas.vivene.inventory.manager.repository.VelaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -105,6 +109,12 @@ public class VelaService {
         return velas.stream()
                 .map(velaMapper::toResponseDTO)
                 .collect(Collectors.toList());
+    }
+
+    public byte[] criarArqCsv() throws IOException {
+        List<TopCincoVelas> velas = top5VelasMaisVendidasRepository.findAll();
+
+        return GerarArquivosCsv.gerarArquivo(velas);
     }
 
 }
