@@ -1,6 +1,6 @@
 package com.velas.vivene.inventory.manager.service;
 
-import com.velas.vivene.inventory.manager.commons.GerarArquivos;
+import com.velas.vivene.inventory.manager.commons.GerarArquivosTxt;
 import com.velas.vivene.inventory.manager.commons.LerArquivos;
 import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
 import com.velas.vivene.inventory.manager.dto.cliente.ClienteMapper;
@@ -81,10 +81,11 @@ public class ClienteService {
 
     public byte[] criarArqTxt() throws IOException {
         List<ClientesMaisCompras> clientes = clientesMaisComprasRepository.findAll();
-        return GerarArquivos.gerarArquivoTxt(clientes);
+        return GerarArquivosTxt.gerarArquivoTxt(clientes);
     }
 
     public void lerArqTxt(byte[] file) throws IOException {
         LerArquivos.importarArquivoTxt(file);
+
     }
 }

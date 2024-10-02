@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class GerarArquivos {
+public class GerarArquivosTxt {
 
     public static byte[] gerarArquivoTxt(List<ClientesMaisCompras> clientes) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
