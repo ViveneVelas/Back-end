@@ -212,7 +212,7 @@ public class VelaController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDispositionFormData("attachment", nomeArq + ".txt");
+        headers.setContentDispositionFormData("attachment", nomeArq + ".csv");
 
         return new ResponseEntity<>(arquivo, headers, HttpStatus.OK);
     }

@@ -86,5 +86,6 @@ public class ClienteService {
 
     public void lerArqTxt(byte[] file) throws IOException {
         LerArquivos.importarArquivoTxt(file);
+
     }
 }
