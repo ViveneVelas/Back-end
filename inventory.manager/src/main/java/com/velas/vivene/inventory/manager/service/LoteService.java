@@ -1,25 +1,32 @@
 package com.velas.vivene.inventory.manager.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+
+import com.velas.vivene.inventory.manager.commons.exceptions.CustomDataIntegrityViolationException;
+import com.velas.vivene.inventory.manager.commons.exceptions.NoContentException;
 import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
+import com.velas.vivene.inventory.manager.commons.exceptions.UnexpectedServerErrorException;
 import com.velas.vivene.inventory.manager.dto.lote.LoteMapper;
 import com.velas.vivene.inventory.manager.dto.lote.LoteRequestDto;
 import com.velas.vivene.inventory.manager.dto.lote.LoteResponseDto;
 import com.velas.vivene.inventory.manager.dto.lotesproximodovencimento.LotesProximoDoVencimentoResponse;
 import com.velas.vivene.inventory.manager.dto.lotesproximodovencimento.LotesProximosDoVencimentoMapper;
 import com.velas.vivene.inventory.manager.entity.Lote;
-import com.velas.vivene.inventory.manager.entity.view.LotesProximoDoVencimento;
 import com.velas.vivene.inventory.manager.entity.Vela;
+import com.velas.vivene.inventory.manager.entity.view.LotesProximoDoVencimento;
 import com.velas.vivene.inventory.manager.repository.LoteRepository;
 import com.velas.vivene.inventory.manager.repository.LotesProximoDoVencimentoRepository;
 import com.velas.vivene.inventory.manager.repository.VelaRepository;
+
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,25 +42,40 @@ public class LoteService {
         Vela vela = velaRepository.findById(loteRequestDTO.getFkVela())
                 .orElseThrow(() -> new ResourceNotFoundException("Vela não encontrada com o id: " + loteRequestDTO.getFkVela()));
 
-        Lote lote = loteMapper.toEntity(loteRequestDTO);
-        lote.setVela(vela);
-        lote = loteRepository.save(lote);
+        if (loteRequestDTO == null) {
+            throw new ValidationException("Os dados do lote são obrigatórios.");
+        }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd_MM_yyyy");
-        String dataFormatada = LocalDate.now().format(formatter);
+        try {
+            Lote lote = loteMapper.toEntity(loteRequestDTO);
+            lote.setVela(vela);
+            lote = loteRepository.save(lote);
 
-        lote.setCodigoQrCode(lote.getId()+"-"+lote.getVela().getId()+"-"+ dataFormatada);
-        lote = loteRepository.save(lote);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd_MM_yyyy");
+            String dataFormatada = LocalDate.now().format(formatter);
 
-        return loteMapper.toResponseDTO(lote);
+            lote.setCodigoQrCode(lote.getId()+"-"+lote.getVela().getId()+"-"+ dataFormatada);
+            lote = loteRepository.save(lote);
+
+            return loteMapper.toResponseDTO(lote);
+        } catch (DataIntegrityViolationException ex) {
+            throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao salvar o lote.");
+        } catch (Exception ex) {
+            throw new UnexpectedServerErrorException("Erro inesperado ao criar lote.");
+        }
     }
 
     public List<LoteResponseDto> listarLotes() {
-        return loteRepository.findAll().stream()
+        List<LoteResponseDto> lotes = loteRepository.findAll().stream()
                 .map(loteMapper::toResponseDTO)
                 .toList();
-    }
 
+        if (lotes.isEmpty()) {
+            throw new NoContentException("Não existe nenhum lote no banco de dados");
+        }
+
+        return lotes;
+    }
 
     public LoteResponseDto obterLotePorId(Integer id) {
         Lote lote = loteRepository.findById(id)
@@ -62,36 +84,59 @@ public class LoteService {
     }
 
     public LoteResponseDto updateLote(Integer id, LoteRequestDto loteRequestDTO) {
-        Lote lote = loteRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Lote não encontrado com o id: " + id));
 
-        lote.setQuantidade(loteRequestDTO.getQuantidade());
-        lote.setDataFabricacao(loteRequestDTO.getDataFabricacao());
-        lote.setDataValidade(loteRequestDTO.getDataValidade());
-        lote.setLocalizacao(loteRequestDTO.getLocalizacao());
+        if (loteRequestDTO == null) {
+            throw new ValidationException("Os dados do lote são obrigatórios.");
+        }
 
-        Vela vela = velaRepository.findById(loteRequestDTO.getFkVela())
-                .orElseThrow(() -> new ResourceNotFoundException("Vela não encontrada com o id: " + loteRequestDTO.getFkVela()));
-        lote.setVela(vela);
+        try {
+            Lote lote = loteRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Lote não encontrado com o id: " + id));
 
-        lote = loteRepository.save(lote);
-        return loteMapper.toResponseDTO(lote);
+            lote.setQuantidade(loteRequestDTO.getQuantidade());
+            lote.setDataFabricacao(loteRequestDTO.getDataFabricacao());
+            lote.setDataValidade(loteRequestDTO.getDataValidade());
+            lote.setLocalizacao(loteRequestDTO.getLocalizacao());
+
+            Vela vela = velaRepository.findById(loteRequestDTO.getFkVela())
+                    .orElseThrow(() -> new ResourceNotFoundException("Vela não encontrada com o id: " + loteRequestDTO.getFkVela()));
+            lote.setVela(vela);
+
+            lote = loteRepository.save(lote);
+            return loteMapper.toResponseDTO(lote);
+        } catch (DataIntegrityViolationException ex) {
+            throw new CustomDataIntegrityViolationException("Erro de integridade ao atualizar o lote: " + ex.getMessage());
+        } catch (Exception ex) {
+            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar o lote.");
+        }
     }
 
     public void excluirLote(Integer id) {
-        loteRepository.deleteById(id);
+        Lote lote = loteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Lote não encontrado com o id: " + id));
+        loteRepository.delete(lote);
     }
 
     public List<LotesProximoDoVencimentoResponse> getLotesVencimento() {
-        List<LotesProximoDoVencimento> lotes = lotesProximoDoVencimentoRepository.findAll();
-        List<LotesProximoDoVencimentoResponse> lotesResponse = new ArrayList<>();
+        try {
+            List<LotesProximoDoVencimento> lotes = lotesProximoDoVencimentoRepository.findAll();
+            List<LotesProximoDoVencimentoResponse> lotesResponse = new ArrayList<>();
 
-        for (LotesProximoDoVencimento l : lotes) {
-            LotesProximoDoVencimentoResponse lotesR = new LotesProximoDoVencimentoResponse();
-            lotesR = lotesProximosDoVencimentoMapper.toResponseDto(l);
-            lotesResponse.add(lotesR);
+            if (lotes.isEmpty()) {
+                throw new NoContentException("Não existe nenhum lote no banco de dados");
+            }
+
+            for (LotesProximoDoVencimento l : lotes) {
+                LotesProximoDoVencimentoResponse lotesR = new LotesProximoDoVencimentoResponse();
+                lotesR = lotesProximosDoVencimentoMapper.toResponseDto(l);
+                lotesResponse.add(lotesR);
+            }
+
+            return lotesResponse;
+        } catch (NoContentException ex) {
+            throw new NoContentException("Nenhum lote próximo do vencimento foi encontrado.");
+        } catch (Exception ex) {
+            throw new UnexpectedServerErrorException("Erro inesperado ao buscar os lotes próximos do vencimento.");
         }
-
-        return lotesResponse;
     }
 }

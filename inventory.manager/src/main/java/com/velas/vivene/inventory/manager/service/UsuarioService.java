@@ -1,19 +1,24 @@
 package com.velas.vivene.inventory.manager.service;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+
+import com.velas.vivene.inventory.manager.commons.exceptions.CustomDataIntegrityViolationException;
+import com.velas.vivene.inventory.manager.commons.exceptions.NoContentException;
 import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
+import com.velas.vivene.inventory.manager.commons.exceptions.UnexpectedServerErrorException;
 import com.velas.vivene.inventory.manager.dto.usuario.UsuarioMapper;
 import com.velas.vivene.inventory.manager.dto.usuario.UsuarioRequestDto;
 import com.velas.vivene.inventory.manager.dto.usuario.UsuarioResponseDto;
-import com.velas.vivene.inventory.manager.entity.Login;
 import com.velas.vivene.inventory.manager.entity.Usuario;
 import com.velas.vivene.inventory.manager.repository.UsuarioRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import jakarta.validation.ValidationException;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -23,24 +28,42 @@ public class UsuarioService {
     private final UsuarioMapper usuarioMapper;
 
     public UsuarioResponseDto createUsuario(UsuarioRequestDto usuarioRequestDTO) {
-        Usuario usuario = usuarioMapper.toEntity(usuarioRequestDTO);
-        usuario.setUltimoAcesso(LocalDate.now());
-        usuario = usuarioRepository.save(usuario);
-        return usuarioMapper.toResponseDTO(usuario);
+        if (usuarioRequestDTO == null) {
+            throw new ValidationException("Os dados do usuário são obrigatórios.");
+        }
+
+        try {
+            Usuario usuario = usuarioMapper.toEntity(usuarioRequestDTO);
+            usuario.setUltimoAcesso(LocalDate.now());
+            usuario = usuarioRepository.save(usuario);
+            return usuarioMapper.toResponseDTO(usuario);
+        } catch (DataIntegrityViolationException ex) {
+            throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao salvar o usuário.");
+        } catch (Exception ex) {
+            throw new UnexpectedServerErrorException("Erro inesperado ao criar usuário.");
+        }
     }
 
     public UsuarioResponseDto updateUsuario(Integer id, UsuarioRequestDto usuarioRequestDTO) {
-        Optional <Usuario> usuario = Optional.ofNullable(usuarioRepository.findById(id).orElseThrow(
-                        () -> new ResourceNotFoundException("Usuário não encontrado com o id: "+id)
-                ));
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com o id: " + id));
 
-        usuario.get().setNome(usuarioRequestDTO.getNome());
-        usuario.get().setLogin(usuarioMapper.toEntity(usuarioRequestDTO).getLogin());
-        usuario.get().setUltimoAcesso(LocalDate.now());
+        if (usuarioRequestDTO == null) {
+            throw new ValidationException("Os dados do usuário são obrigatórios.");
+        }
 
-        Usuario usuarioSaved =  usuarioRepository.save(usuario.get());
+        try {
+            usuario.setNome(usuarioRequestDTO.getNome());
+            usuario.setLogin(usuarioMapper.toEntity(usuarioRequestDTO).getLogin());
+            usuario.setUltimoAcesso(LocalDate.now());
+            Usuario usuarioSaved = usuarioRepository.save(usuario);
 
-        return usuarioMapper.toResponseDTO(usuarioSaved);
+            return usuarioMapper.toResponseDTO(usuarioSaved);
+        } catch (DataIntegrityViolationException ex) {
+            throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao atualizar o usuário.");
+        } catch (Exception ex) {
+            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar usuário.");
+        }
     }
 
     public void deleteUsuario(Integer id) {
@@ -50,22 +73,27 @@ public class UsuarioService {
     }
 
     public List<UsuarioResponseDto> getAllUsuarios() {
-        return usuarioRepository.findAll()
+        List<UsuarioResponseDto> usuarios = usuarioRepository.findAll()
                 .stream()
                 .map(usuarioMapper::toResponseDTO)
                 .collect(Collectors.toList());
+        
+        if (usuarios.isEmpty()) {
+            throw new NoContentException("Não existe nenhum usuário no banco de dados");
+        }
+
+        return usuarios;
     }
 
     public UsuarioResponseDto getUsuarioById(Integer id) {
-        Optional <Usuario> usuario = Optional.ofNullable(usuarioRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Usuário não encontrado com o id: "+id)
-        ));
-        return usuarioMapper.toResponseDTO(usuario.get());
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com o id: " + id));
+        return usuarioMapper.toResponseDTO(usuario);
     }
 
     public UsuarioResponseDto getUsuarioByIdLogin(Integer id) {
-        Optional<Usuario> usuario = usuarioRepository.findByLoginId(id);
-//                .orElseThrow(() -> new ResourceNotFoundException("Usuario não encontrado com o email e senha fornecidos."));
-        return usuarioMapper.toResponseDTO(usuario.get());
+        Usuario usuario = usuarioRepository.findByLoginId(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com o id do login: " + id));
+        return usuarioMapper.toResponseDTO(usuario);
     }
 }
