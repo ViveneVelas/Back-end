@@ -13,7 +13,7 @@ public class HandlerError {
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> notFound(ResourceNotFoundException ex) {
-        return new ResponseEntity<>("Ocorreu um erro interno no servidor.", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>("Ocorreu um erro interno no servidor.", HttpStatus.NOT_FOUND);
     }
 
 }

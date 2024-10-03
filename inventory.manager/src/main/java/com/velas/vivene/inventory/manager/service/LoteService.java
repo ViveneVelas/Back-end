@@ -15,6 +15,9 @@ import com.velas.vivene.inventory.manager.repository.VelaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +37,12 @@ public class LoteService {
 
         Lote lote = loteMapper.toEntity(loteRequestDTO);
         lote.setVela(vela);
+        lote = loteRepository.save(lote);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd_MM_yyyy");
+        String dataFormatada = LocalDate.now().format(formatter);
+
+        lote.setCodigoQrCode(lote.getId()+"-"+lote.getVela().getId()+"-"+ dataFormatada);
         lote = loteRepository.save(lote);
 
         return loteMapper.toResponseDTO(lote);

@@ -14,9 +14,13 @@ import com.velas.vivene.inventory.manager.entity.view.QuantidadeVendasSeisMeses;
 import com.velas.vivene.inventory.manager.repository.LoteRepository;
 import com.velas.vivene.inventory.manager.repository.PedidoRepository;
 import com.velas.vivene.inventory.manager.repository.QuantidadeVendasSeisMesesRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +37,7 @@ public class PedidoService {
     private final QuantidadeVendasSeisMesesMapper quantidadeVendasSeisMesesMapper;
     private final LoteMapper loteMapper;
     private final LoteService loteService;
+    private final EntityManager entityManager;
 
     public PedidoResponseDto criarPedido(PedidoRequestDto pedidoRequest) {
         PedidoVelaRequestDto pedidoLote = new PedidoVelaRequestDto();
@@ -86,6 +91,41 @@ public class PedidoService {
                 .collect(Collectors.toList());
     }
 
+
+    public List<PedidoResponseDto> getAllPedidosFiltro(LocalDate dtValidade, String nomeCliente, String nomeVela ) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Pedido> query = cb.createQuery(Pedido.class);
+        Root<Pedido> root = query.from(Pedido.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (dtValidade != null) {
+            predicates.add(cb.equal(root.get("dtPedido"), dtValidade));
+        }
+
+        if (nomeCliente != null) {
+            Join<Pedido, Cliente> clienteJoin = root.join("cliente");
+            predicates.add(cb.like(clienteJoin.get("nome"), "%" + nomeCliente + "%"));
+        }
+
+
+        if (nomeVela != null) {
+            Join<Pedido, PedidoVela> pedidoVelas = root.join("pedidoVelas");
+                predicates.add(cb.like(pedidoVelas.get("vela").get("nome"), "%" + nomeVela + "%" ));
+        }
+
+        query.select(root).where(cb.and(predicates.toArray(new Predicate[0])));
+
+        List<Pedido> pedidos = entityManager.createQuery(query).getResultList();
+        List<PedidoResponseDto> respostas = new ArrayList<>();
+
+        for (Pedido p : pedidos){
+            respostas.add(pedidoMapper.toResponseDTO(p));
+        }
+
+        return respostas;
+
+    }
 
     public PedidoResponseDto getPedidoById(Integer id) {
         Pedido pedido = pedidoRepository.findById(id)

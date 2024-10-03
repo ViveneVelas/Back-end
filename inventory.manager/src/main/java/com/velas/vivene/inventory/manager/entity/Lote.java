@@ -31,4 +31,7 @@ public class Lote {
     @Column(name = "localizacao")
     private Integer localizacao;
 
+    @Column(name = "codigo_qr_code")
+    private String codigoQrCode;
+
 }

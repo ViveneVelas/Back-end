@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -120,6 +121,22 @@ public class PedidoController {
                     content = { @Content(mediaType = "application/json", schema = @Schema())})})
     public ResponseEntity<List<PedidoResponseDto>> getAllPedidos() {
         List<PedidoResponseDto> responseDTOList = pedidoService.getAllPedidos();
+        return new ResponseEntity<>(responseDTOList, HttpStatus.OK);
+    }
+
+    @GetMapping("/filtro")
+    @Operation(summary = "Busca todos os pedidos com filtro", description = """
+           # Busca todos os pedidos com filtro
+           ---
+           Esse endpoint busca todos os pedidos existentes com filtro
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pedidos buscados com sucesso.",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDto.class))}),
+            @ApiResponse(responseCode = "204", description = "Nenhum pedido encontrado.",
+                    content = { @Content(mediaType = "application/json", schema = @Schema())})})
+    public ResponseEntity<List<PedidoResponseDto>> getAllPedidosFiltro(@RequestParam(required = false) String nomeVela, @RequestParam(required = false) LocalDate data, @RequestParam(required = false) String nomeCliente) {
+        List<PedidoResponseDto> responseDTOList = pedidoService.getAllPedidosFiltro(data, nomeCliente, nomeVela);
         return new ResponseEntity<>(responseDTOList, HttpStatus.OK);
     }
 
