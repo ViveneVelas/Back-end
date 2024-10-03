@@ -26,6 +26,7 @@ public class LoteMapper {
         dto.setDataFabricacao(entity.getDataFabricacao());
         dto.setDataValidade(entity.getDataValidade());
         dto.setLocalizacao(entity.getLocalizacao());
+        dto.setQrCode(entity.getCodigoQrCode());
         Integer id = entity.getVela().getId();
         dto.setFkVela(id);
 
