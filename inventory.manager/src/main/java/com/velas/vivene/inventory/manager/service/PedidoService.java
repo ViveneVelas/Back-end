@@ -3,40 +3,22 @@ package com.velas.vivene.inventory.manager.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.velas.vivene.inventory.manager.commons.exceptions.CustomDataIntegrityViolationException;
-import com.velas.vivene.inventory.manager.commons.exceptions.NoContentException;
-import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
-import com.velas.vivene.inventory.manager.commons.exceptions.UnexpectedServerErrorException;
-import com.velas.vivene.inventory.manager.entity.Cliente;
-import com.velas.vivene.inventory.manager.entity.PedidoVela;
+import com.velas.vivene.inventory.manager.commons.exceptions.*;
+import com.velas.vivene.inventory.manager.entity.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import com.velas.vivene.inventory.manager.commons.*;
-import com.velas.vivene.inventory.manager.dto.lote.LoteMapper;
-import com.velas.vivene.inventory.manager.dto.pedido.PedidoMapper;
-import com.velas.vivene.inventory.manager.dto.pedido.PedidoRequestDto;
-import com.velas.vivene.inventory.manager.dto.pedido.PedidoResponseDto;
+import com.velas.vivene.inventory.manager.dto.pedido.*;
 import com.velas.vivene.inventory.manager.dto.pedidovela.PedidoVelaRequestDto;
-import com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses.QuantidadeVendasSeisMesesMapper;
-import com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses.QuantidadeVendasSeisMesesResponse;
+import com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses.*;
 import com.velas.vivene.inventory.manager.entity.Pedido;
 import com.velas.vivene.inventory.manager.entity.view.QuantidadeVendasSeisMeses;
-import com.velas.vivene.inventory.manager.repository.LoteRepository;
-import com.velas.vivene.inventory.manager.repository.PedidoRepository;
-import com.velas.vivene.inventory.manager.repository.QuantidadeVendasSeisMesesRepository;
+import com.velas.vivene.inventory.manager.repository.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
-
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,12 +26,9 @@ public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
     private final PedidoMapper pedidoMapper;
-    private final LoteRepository loteRepository;
     private final PedidoVelaService pedidoLoteService;
     private final QuantidadeVendasSeisMesesRepository quantidadeVendasSeisMesesRepository;
     private final QuantidadeVendasSeisMesesMapper quantidadeVendasSeisMesesMapper;
-    private final LoteMapper loteMapper;
-    private final LoteService loteService;
     private final EntityManager entityManager;
 
     public PedidoResponseDto criarPedido(PedidoRequestDto pedidoRequest) {

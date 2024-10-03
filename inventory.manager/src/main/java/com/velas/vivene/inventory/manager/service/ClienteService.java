@@ -4,26 +4,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-
-import com.velas.vivene.inventory.manager.commons.GerarArquivosTxt;
-import com.velas.vivene.inventory.manager.commons.LerArquivos;
-import com.velas.vivene.inventory.manager.commons.exceptions.CustomDataIntegrityViolationException;
-import com.velas.vivene.inventory.manager.commons.exceptions.NoContentException;
-import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
-import com.velas.vivene.inventory.manager.commons.exceptions.UnexpectedServerErrorException;
-import com.velas.vivene.inventory.manager.dto.cliente.ClienteMapper;
-import com.velas.vivene.inventory.manager.dto.cliente.ClienteRequestDto;
-import com.velas.vivene.inventory.manager.dto.cliente.ClienteResponseDto;
-import com.velas.vivene.inventory.manager.dto.clientesmaiscompras.ClienteMaisComprasResponse;
-import com.velas.vivene.inventory.manager.dto.clientesmaiscompras.ClientesMaisComprasMapper;
+import com.velas.vivene.inventory.manager.commons.*;
+import com.velas.vivene.inventory.manager.commons.exceptions.*;
+import com.velas.vivene.inventory.manager.dto.cliente.*;
+import com.velas.vivene.inventory.manager.dto.clientesmaiscompras.*;
 import com.velas.vivene.inventory.manager.entity.Cliente;
 import com.velas.vivene.inventory.manager.entity.view.ClientesMaisCompras;
-import com.velas.vivene.inventory.manager.repository.ClienteRepository;
-import com.velas.vivene.inventory.manager.repository.ClientesMaisComprasRepository;
-
+import com.velas.vivene.inventory.manager.repository.*;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 
@@ -120,6 +109,5 @@ public class ClienteService {
 
     public void lerArqTxt(byte[] file) throws IOException {
         LerArquivos.importarArquivoTxt(file);
-
     }
 }
