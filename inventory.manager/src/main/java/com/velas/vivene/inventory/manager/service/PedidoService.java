@@ -60,7 +60,7 @@ public class PedidoService {
             Pedido pedidoSave = pedidoRepository.save(pedido);
 
             pedidoLote.setPedidoId(pedidoSave.getId());
-            pedidoLote.setVelaId(pedidoRequest.getLoteId());
+            pedidoLote.setVelaId(pedidoRequest.getVelaId());
             pedidoLote.setQuantidade(pedidoRequest.getQtdVelas());
 
             pedidoLoteService.createPedidoVela(pedidoLote);
