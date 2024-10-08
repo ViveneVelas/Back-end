@@ -51,7 +51,7 @@ public class LoteService {
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao salvar o lote.");
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao criar lote.");
+            throw new UnexpectedServerErrorException("Erro inesperado ao criar lote " + ex);
         }
     }
 
@@ -97,7 +97,7 @@ public class LoteService {
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Erro de integridade ao atualizar o lote: " + ex.getMessage());
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar o lote.");
+            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar o lote " + ex);
         }
     }
 

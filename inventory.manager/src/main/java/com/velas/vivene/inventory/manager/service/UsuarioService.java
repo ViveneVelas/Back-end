@@ -40,7 +40,7 @@ public class UsuarioService {
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao salvar o usuário.");
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao criar usuário.");
+            throw new UnexpectedServerErrorException("Erro inesperado ao criar usuário " + ex);
         }
     }
 
@@ -62,7 +62,7 @@ public class UsuarioService {
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao atualizar o usuário.");
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar usuário.");
+            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar usuário " + ex);
         }
     }
 

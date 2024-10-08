@@ -24,7 +24,7 @@ public class HandlerError {
 
     @ExceptionHandler(NoContentException.class)
     public ResponseEntity<String> handleNoContent(NoContentException ex) {
-        return new ResponseEntity<>(ex.getMessage() , HttpStatus.OK);
+        return new ResponseEntity<>(ex.getMessage() , HttpStatus.NO_CONTENT);
     }
 
     @ExceptionHandler(ValidationException.class)

@@ -46,7 +46,7 @@ public class MetaService {
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao salvar a meta.");
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao criar meta.");
+            throw new UnexpectedServerErrorException("Erro inesperado ao criar meta " + ex);
         }
     }
 
@@ -68,7 +68,7 @@ public class MetaService {
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao atualizar a meta.");
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar meta.");
+            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar meta " + ex);
         }
     }
 

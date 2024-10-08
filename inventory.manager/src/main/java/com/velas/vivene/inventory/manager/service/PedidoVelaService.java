@@ -44,7 +44,7 @@ public class PedidoVelaService {
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao salvar o pedido vela.");
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao criar pedido vela.");
+            throw new UnexpectedServerErrorException("Erro inesperado ao criar pedido vela " + ex);
         }
     }
 
@@ -70,7 +70,7 @@ public class PedidoVelaService {
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao atualizar o pedido vela.");
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar pedido vela.");
+            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar pedido vela " + ex);
         }
     }
 

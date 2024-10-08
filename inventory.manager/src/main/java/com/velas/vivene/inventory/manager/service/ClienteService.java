@@ -48,7 +48,7 @@ public class ClienteService {
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao salvar o cliente.");
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao criar cliente.");
+            throw new UnexpectedServerErrorException("Erro inesperado ao criar cliente " + ex);
         }
     }
 
@@ -69,7 +69,7 @@ public class ClienteService {
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao atualizar o cliente.");
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar cliente.");
+            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar cliente " + ex);
         }
     }
 
