@@ -78,28 +78,33 @@ public class LoteService {
         if (loteRequestDTO == null) {
             throw new ValidationException("Os dados do lote são obrigatórios.");
         }
-
+    
         try {
             Lote lote = loteRepository.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Lote não encontrado com o id: " + id));
-
+    
             lote.setQuantidade(loteRequestDTO.getQuantidade());
             lote.setDataFabricacao(loteRequestDTO.getDataFabricacao());
             lote.setDataValidade(loteRequestDTO.getDataValidade());
             lote.setLocalizacao(loteRequestDTO.getLocalizacao());
-
+    
             Vela vela = velaRepository.findById(loteRequestDTO.getFkVela())
                     .orElseThrow(() -> new ResourceNotFoundException("Vela não encontrada com o id: " + loteRequestDTO.getFkVela()));
             lote.setVela(vela);
-
+    
             lote = loteRepository.save(lote);
             return loteMapper.toResponseDTO(lote);
+            
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Erro de integridade ao atualizar o lote: " + ex.getMessage());
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar o lote " + ex);
+            if (!(ex instanceof ResourceNotFoundException)) {
+                throw new UnexpectedServerErrorException("Erro inesperado ao atualizar o lote: " + ex.getMessage());
+            }
+            throw ex; 
         }
     }
+    
 
     public void excluirLote(Integer id) {
         Lote lote = loteRepository.findById(id)
