@@ -25,6 +25,9 @@ import com.velas.vivene.inventory.manager.repository.VelaRepository;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 @Service
 @RequiredArgsConstructor
 public class LoteService {
@@ -47,6 +50,13 @@ public class LoteService {
             Lote lote = loteMapper.toEntity(loteRequestDTO);
             lote.setVela(vela);
             lote = loteRepository.save(lote);
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd_MM_yyyy");
+            String dataFormatada = LocalDate.now().format(formatter);
+
+            lote.setCodigoQrCode(lote.getId()+"-"+lote.getVela().getId()+"-"+ dataFormatada);
+            lote = loteRepository.save(lote);
+
             return loteMapper.toResponseDTO(lote);
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao salvar o lote.");
@@ -120,13 +130,13 @@ public class LoteService {
             if (lotes.isEmpty()) {
                 throw new NoContentException("Não existe nenhum lote no banco de dados");
             }
-    
+
             for (LotesProximoDoVencimento l : lotes) {
                 LotesProximoDoVencimentoResponse lotesR = new LotesProximoDoVencimentoResponse();
                 lotesR = lotesProximosDoVencimentoMapper.toResponseDto(l);
                 lotesResponse.add(lotesR);
             }
-    
+
             return lotesResponse;
         } catch (NoContentException ex) {
             throw new NoContentException("Nenhum lote próximo do vencimento foi encontrado.");
@@ -134,5 +144,4 @@ public class LoteService {
             throw new UnexpectedServerErrorException("Erro inesperado ao buscar os lotes próximos do vencimento.");
         }
     }
-    
 }
