@@ -10,6 +10,18 @@ import org.springframework.stereotype.Service;
 import com.velas.vivene.inventory.manager.commons.*;
 import com.velas.vivene.inventory.manager.dto.pedido.*;
 import com.velas.vivene.inventory.manager.dto.pedidovela.PedidoVelaRequestDto;
+
+import com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses.QuantidadeVendasSeisMesesMapper;
+import com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses.QuantidadeVendasSeisMesesResponse;
+import com.velas.vivene.inventory.manager.dto.top5pedidos.TopCincoPedidosMapper;
+import com.velas.vivene.inventory.manager.dto.top5pedidos.TopCincoPedidosResponse;
+import com.velas.vivene.inventory.manager.entity.Pedido;
+import com.velas.vivene.inventory.manager.entity.view.QuantidadeVendasSeisMeses;
+import com.velas.vivene.inventory.manager.entity.view.TopCincoPedidos;
+import com.velas.vivene.inventory.manager.repository.LoteRepository;
+import com.velas.vivene.inventory.manager.repository.PedidoRepository;
+import com.velas.vivene.inventory.manager.repository.QuantidadeVendasSeisMesesRepository;
+import com.velas.vivene.inventory.manager.repository.TopCincoPedidosRepository;
 import com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses.*;
 import com.velas.vivene.inventory.manager.entity.Pedido;
 import com.velas.vivene.inventory.manager.entity.view.QuantidadeVendasSeisMeses;
@@ -29,6 +41,10 @@ public class PedidoService {
     private final PedidoVelaService pedidoLoteService;
     private final QuantidadeVendasSeisMesesRepository quantidadeVendasSeisMesesRepository;
     private final QuantidadeVendasSeisMesesMapper quantidadeVendasSeisMesesMapper;
+    private final TopCincoPedidosRepository topCincoPedidosRepository;
+    private final LoteMapper loteMapper;
+    private final LoteService loteService;
+    private final TopCincoPedidosMapper topCincoPedidosMapper;
     private final EntityManager entityManager;
 
     public PedidoResponseDto criarPedido(PedidoRequestDto pedidoRequest) {
@@ -44,7 +60,7 @@ public class PedidoService {
             Pedido pedidoSave = pedidoRepository.save(pedido);
 
             pedidoLote.setPedidoId(pedidoSave.getId());
-            pedidoLote.setVelaId(pedidoRequest.getLoteId());
+            pedidoLote.setVelaId(pedidoRequest.getVelaId());
             pedidoLote.setQuantidade(pedidoRequest.getQtdVelas());
 
             pedidoLoteService.createPedidoVela(pedidoLote);
@@ -53,7 +69,7 @@ public class PedidoService {
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao salvar o pedido.");
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao criar pedido.");
+            throw new UnexpectedServerErrorException("Erro inesperado ao criar pedido " + ex);
         }
     }
 
@@ -77,7 +93,7 @@ public class PedidoService {
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao atualizar o pedido.");
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar pedido.");
+            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar pedido " + ex);
         }
     }
 
@@ -170,6 +186,23 @@ public class PedidoService {
         }
 
         return vendasResponse;
+    }
+    public List<TopCincoPedidosResponse> getTopCincoPedidos() {
+        List<TopCincoPedidos> pedidos = topCincoPedidosRepository.findAll();
+
+        if (pedidos.isEmpty()) {
+            throw new NoContentException("Não existe nenhum top cinco pedidos no banco de dados");
+        }
+
+        List<TopCincoPedidosResponse> pedidosResponse = new ArrayList<>();
+
+        for (TopCincoPedidos p : pedidos) {
+            TopCincoPedidosResponse pedidoR = new TopCincoPedidosResponse();
+            pedidoR = topCincoPedidosMapper.toDto(p);
+            pedidosResponse.add(pedidoR);
+        }
+
+        return pedidosResponse;
     }
 
 }

@@ -1,9 +1,25 @@
 package com.velas.vivene.inventory.manager.controller;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoRequestDto;
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoResponseDto;
 import com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses.QuantidadeVendasSeisMesesResponse;
+import com.velas.vivene.inventory.manager.dto.top5pedidos.TopCincoPedidosResponse;
 import com.velas.vivene.inventory.manager.service.PedidoService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,7 +31,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -174,4 +189,20 @@ public class PedidoController {
         List<QuantidadeVendasSeisMesesResponse> responses = pedidoService.getQuantidadeVendasSeisMeses();
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
+
+    @GetMapping("/top-cinco-pedidos")
+    @Operation(summary= "Busca os cinco pedidos mais próximos da data de entrega", description= """
+                    # Busca top cinco pedidos mais próximo do vencimento
+                    ---
+                    Esse endpoint busca os top cinco pedidos mais próximo do vencimento, data atual mais próxima
+                    """)
+        @ApiResponses(value={
+                @ApiResponse(responseCode="200", description="Top cinco pedidos encontrado com sucesso.",
+                content= {@Content(mediaType= "application/json", schema=@Schema(implementation=TopCincoPedidosResponse.class))}),
+                @ApiResponse(responseCode="204", description="Nenhum pedido encontrado.", 
+                content={ @Content(mediaType="application/json", schema= @Schema())})})
+        public ResponseEntity<List<TopCincoPedidosResponse>> getTopCincoPedidos() {
+                return new ResponseEntity<>(pedidoService.getTopCincoPedidos(), HttpStatus.OK);
+        }
+        
 }

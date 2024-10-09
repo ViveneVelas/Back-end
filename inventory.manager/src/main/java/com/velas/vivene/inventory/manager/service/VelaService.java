@@ -55,7 +55,7 @@ public class VelaService {
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao salvar a vela.");
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao criar vela.");
+            throw new UnexpectedServerErrorException("Erro inesperado ao criar vela " + ex);
         }
     }
 
@@ -77,7 +77,7 @@ public class VelaService {
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao atualizar a vela.");
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar vela.");
+            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar vela " + ex);
         }
     }
 

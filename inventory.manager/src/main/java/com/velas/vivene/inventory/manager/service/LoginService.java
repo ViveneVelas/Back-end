@@ -37,7 +37,7 @@ public class LoginService {
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao salvar o login.");
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao criar login.");
+            throw new UnexpectedServerErrorException("Erro inesperado ao criar login " + ex);
         }
     }
 
@@ -57,7 +57,7 @@ public class LoginService {
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao atualizar o login.");
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar login.");
+            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar login " + ex);
         }
     }
 

@@ -46,7 +46,7 @@ public class VendaService {
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao salvar a venda.");
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao criar venda.");
+            throw new UnexpectedServerErrorException("Erro inesperado ao criar venda " + ex);
         }
     }
 
@@ -66,7 +66,7 @@ public class VendaService {
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao atualizar a venda.");
         } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar venda.");
+            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar venda " + ex);
         }
     }
 
