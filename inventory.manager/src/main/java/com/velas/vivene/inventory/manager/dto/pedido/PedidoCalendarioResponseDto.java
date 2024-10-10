@@ -9,14 +9,14 @@ import java.util.List;
 
 @Getter
 @Setter
-public class PedidoResponseDto {
+public class PedidoCalendarioResponseDto {
 
     private Integer id;
-    private LocalDate dtPedido;
+    private LocalDate start;
+    private LocalDate end;
     private Double preco;
-    private String descricao;
-    private String tipoEntrega;
-    private String status;
+    private String titulo;
+    private String title;
     private Integer clienteId;
     private String clienteNome;
     private List<VelaPedidoListaDto> listaDeVelas;

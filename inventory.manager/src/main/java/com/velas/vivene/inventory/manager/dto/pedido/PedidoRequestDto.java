@@ -1,6 +1,7 @@
 package com.velas.vivene.inventory.manager.dto.pedido;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,9 +30,10 @@ public class PedidoRequestDto {
     @NotNull(message = "O ID do cliente é obrigatório.")
     private Integer clienteId;
 
-    @NotNull(message = "O ID da vela é obrigatório")
-    private Integer velaId;
-
-    @NotNull(message = "A quantidade de velas do pedido é obrigatório")
-    private Integer qtdVelas;
+    private List<VelaPedidoListaDto> listaVelas;
+//    @NotNull(message = "O ID da vela é obrigatório")
+//    private Integer velaId;
+//
+//    @NotNull(message = "A quantidade de velas do pedido é obrigatório")
+//    private Integer qtdVelas;
 }

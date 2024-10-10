@@ -1,6 +1,7 @@
 package com.velas.vivene.inventory.manager.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
