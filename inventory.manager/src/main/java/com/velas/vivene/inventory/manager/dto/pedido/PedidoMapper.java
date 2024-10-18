@@ -54,10 +54,12 @@ public class PedidoMapper {
         responseDTO.setId(pedido.getId());
         responseDTO.setEnd(pedido.getDtPedido());
         responseDTO.setStart(pedido.getDtPedido());
+        responseDTO.setDate(pedido.getDtPedido());
         responseDTO.setPreco(pedido.getPreco());
         responseDTO.setClienteId(pedido.getCliente().getId());
         responseDTO.setClienteNome(pedido.getCliente().getNome());
         responseDTO.setListaDeVelas(lista);
+        responseDTO.setColor("#7CC6D7");
         responseDTO.setTitulo("Pedido - Entrega");
         responseDTO.setTitle("Pedido - Entrega");
 

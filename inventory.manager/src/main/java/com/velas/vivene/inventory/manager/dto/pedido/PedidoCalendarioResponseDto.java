@@ -14,6 +14,8 @@ public class PedidoCalendarioResponseDto {
     private Integer id;
     private LocalDate start;
     private LocalDate end;
+    private LocalDate date;
+    private String color;
     private Double preco;
     private String titulo;
     private String title;
