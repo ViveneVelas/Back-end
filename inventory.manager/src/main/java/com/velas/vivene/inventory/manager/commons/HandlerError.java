@@ -11,7 +11,6 @@ import com.velas.vivene.inventory.manager.commons.exceptions.InvalidArgumentExce
 import com.velas.vivene.inventory.manager.commons.exceptions.MalformedRequestException;
 import com.velas.vivene.inventory.manager.commons.exceptions.NoContentException;
 import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
-import com.velas.vivene.inventory.manager.commons.exceptions.UnexpectedServerErrorException;
 import com.velas.vivene.inventory.manager.commons.exceptions.ValidationException;
 
 @ControllerAdvice
@@ -52,9 +51,9 @@ public class HandlerError {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(UnexpectedServerErrorException.class)
-    public ResponseEntity<String> handleUnexpectedServerError(UnexpectedServerErrorException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    //@ExceptionHandler(UnexpectedServerErrorException.class)
+    //public ResponseEntity<String> handleUnexpectedServerError(UnexpectedServerErrorException ex) {
+      //  return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    //}
 
 }

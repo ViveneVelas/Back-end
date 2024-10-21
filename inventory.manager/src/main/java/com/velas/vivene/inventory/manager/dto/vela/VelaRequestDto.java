@@ -1,6 +1,5 @@
 package com.velas.vivene.inventory.manager.dto.vela;
 
-import com.velas.vivene.inventory.manager.commons.Tamanho;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,4 +20,7 @@ public class VelaRequestDto {
 
     @NotBlank
     private String descricao;
+
+    @NotNull
+    private byte[] imagem;
 }
