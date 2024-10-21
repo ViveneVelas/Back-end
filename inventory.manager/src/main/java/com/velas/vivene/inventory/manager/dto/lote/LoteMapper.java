@@ -1,5 +1,6 @@
 package com.velas.vivene.inventory.manager.dto.lote;
 
+import com.velas.vivene.inventory.manager.dto.vela.VelaMapper;
 import com.velas.vivene.inventory.manager.entity.Lote;
 import com.velas.vivene.inventory.manager.repository.VelaRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoteMapper {
     private final VelaRepository velaRepository;
+    private final VelaMapper velaMapper;
 
     public Lote toEntity(LoteRequestDto dto) {
         Lote lote = new Lote();
@@ -27,8 +29,7 @@ public class LoteMapper {
         dto.setDataValidade(entity.getDataValidade());
         dto.setLocalizacao(entity.getLocalizacao());
         dto.setQrCode(entity.getCodigoQrCode());
-        Integer id = entity.getVela().getId();
-        dto.setFkVela(id);
+        dto.setVela(velaMapper.toResponseDTO(entity.getVela()));
 
         return dto;
     }

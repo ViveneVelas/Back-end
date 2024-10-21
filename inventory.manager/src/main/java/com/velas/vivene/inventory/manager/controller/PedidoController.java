@@ -2,6 +2,7 @@ package com.velas.vivene.inventory.manager.controller;
 
 import java.util.List;
 
+import com.velas.vivene.inventory.manager.dto.pedido.PedidoCalendarioResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -86,25 +87,6 @@ public class PedidoController {
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
-    @PutMapping("/finaliza/{id}")
-    @Operation(summary = "Finaliza um pedido existente", description = """
-           # Finalizar pedido
-           ---
-           Esse endpoint finaliza um pedido existente
-           ---
-           Nota:
-           O id é obrigatório
-            """)
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Pedido finalizado com sucesso.",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDto.class))}),
-            @ApiResponse(responseCode = "404", description = "Pedido não encontrado.",
-                    content = { @Content(mediaType = "application/json", schema = @Schema())})})
-    public ResponseEntity<PedidoResponseDto> finalizaPedido(@PathVariable Integer id) {
-        PedidoResponseDto responseDTO = pedidoService.finalizaPedido(id);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-    }
-
     @DeleteMapping("/{id}")
     @Operation(summary = "Deleta um pedido existente", description = """
            # Deletar pedido
@@ -136,6 +118,22 @@ public class PedidoController {
                     content = { @Content(mediaType = "application/json", schema = @Schema())})})
     public ResponseEntity<List<PedidoResponseDto>> getAllPedidos() {
         List<PedidoResponseDto> responseDTOList = pedidoService.getAllPedidos();
+        return new ResponseEntity<>(responseDTOList, HttpStatus.OK);
+    }
+
+    @GetMapping("/calendario")
+    @Operation(summary = "Busca todos os pedidos detalhe calendario", description = """
+           # Busca todos os pedidos
+           ---
+           Esse endpoint busca todos os pedidos existentes
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pedidos buscados com sucesso.",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDto.class))}),
+            @ApiResponse(responseCode = "204", description = "Nenhum pedido encontrado.",
+                    content = { @Content(mediaType = "application/json", schema = @Schema())})})
+    public ResponseEntity<List<PedidoCalendarioResponseDto>> getAllPedidosCalendario() {
+        List<PedidoCalendarioResponseDto> responseDTOList = pedidoService.getAllPedidosCalendario();
         return new ResponseEntity<>(responseDTOList, HttpStatus.OK);
     }
 
