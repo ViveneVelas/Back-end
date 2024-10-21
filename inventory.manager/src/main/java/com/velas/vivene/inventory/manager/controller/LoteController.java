@@ -146,6 +146,44 @@ public class LoteController {
         List<LotesProximoDoVencimentoResponse> response = loteService.getLotesVencimento();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("/casa")
+    @Operation(summary = "Busca todos os lotes da casa", description = """
+           # Buscar lote
+           ---
+           Esse endpoint busca todos os lotes criados.
+           ---
+           Nota:
+           - N/A
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lotes encontrados com sucesso (OK).",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = LoteResponseDto.class))}),
+            @ApiResponse(responseCode = "400", description = "Lotes não encontrado no banco de dados.",
+                    content = {@Content(mediaType = "application/json", schema = @Schema())})})
+    public ResponseEntity<List<LoteResponseDto>> getAllLotesCasa() {
+        List<LoteResponseDto> responseDtoList = loteService.listarLoteCasa();
+        return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
+    }
+
+    @GetMapping("/estudio")
+    @Operation(summary = "Busca todos os lotes do estudio", description = """
+           # Buscar lote
+           ---
+           Esse endpoint busca todos os lotes criados.
+           ---
+           Nota:
+           - N/A
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lotes encontrados com sucesso (OK).",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = LoteResponseDto.class))}),
+            @ApiResponse(responseCode = "400", description = "Lotes não encontrado no banco de dados.",
+                    content = {@Content(mediaType = "application/json", schema = @Schema())})})
+    public ResponseEntity<List<LoteResponseDto>> getAllLotesEstudio() {
+        List<LoteResponseDto> responseDtoList = loteService.listarLoteEstudio();
+        return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
+    }
 }
 
 

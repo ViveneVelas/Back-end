@@ -77,6 +77,30 @@ public class LoteService {
         return lotes;
     }
 
+    public List<LoteResponseDto> listarLoteCasa() {
+        List<LoteResponseDto> lotes = loteRepository.findAllByLocalizacao(0).stream()
+                .map(loteMapper::toResponseDTO)
+                .toList();
+
+        if (lotes.isEmpty()) {
+            throw new NoContentException("Não existe nenhum lote no banco de dados");
+        }
+
+        return lotes;
+    }
+
+    public List<LoteResponseDto> listarLoteEstudio() {
+        List<LoteResponseDto> lotes = loteRepository.findAllByLocalizacao(1).stream()
+                .map(loteMapper::toResponseDTO)
+                .toList();
+
+        if (lotes.isEmpty()) {
+            throw new NoContentException("Não existe nenhum lote no banco de dados");
+        }
+
+        return lotes;
+    }
+
     public LoteResponseDto obterLotePorId(Integer id) {
         Lote lote = loteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lote não encontrado com o id: " + id));
