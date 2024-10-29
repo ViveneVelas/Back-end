@@ -58,11 +58,13 @@ public class VelaController {
             content = {@Content(mediaType = "application/json", schema = @Schema(implementation = VelaResponseDto.class))}),
             @ApiResponse(responseCode = "400", description = "Campos de vela estão incorretos",
             content = @Content(mediaType = "application/json", schema = @Schema()))})
-    public ResponseEntity<VelaResponseDto> createVela(    @RequestParam("nome") String nome,
-    @RequestParam("tamanho") String tamanho,
-    @RequestParam("preco") Double preco,
-    @RequestParam("descricao") String descricao,
-    @RequestParam("imagem") MultipartFile imagem) {
+    public ResponseEntity<VelaResponseDto> createVela(
+        @RequestParam("nome") String nome,
+        @RequestParam("tamanho") String tamanho,
+        @RequestParam("preco") Double preco,
+        @RequestParam("descricao") String descricao,
+        @RequestParam("imagem") MultipartFile imagem)
+    {
         VelaResponseDto responseDTO = velaService.createVela(nome, tamanho, preco, descricao, imagem);
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }

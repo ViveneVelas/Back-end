@@ -76,9 +76,9 @@ public class VelaService {
             Vela vela = velaMapper.toEntity(velaRequestDTO);
             vela.setFkImagem(imagemSalva.getId()); 
             Vela velas = velaRepository.save(vela);
-    
+
             hashTableService.addName(velas.getNome());
-            
+
             return velaMapper.toResponseDTO(velas);
         } catch (DataIntegrityViolationException ex) {
             throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao salvar a vela.");
@@ -214,7 +214,6 @@ public class VelaService {
         if (velas.isEmpty()) {
             throw new NoContentException("Não existe nenhuma vela no banco de dados");
         }
-    
         return velas.stream()
                 .map(vela -> {
                     try {

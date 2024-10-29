@@ -1,5 +1,6 @@
 package com.velas.vivene.inventory.manager.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,8 +67,13 @@ public class LoteService {
     }
 
     public List<LoteResponseDto> listarLotes() {
-        List<LoteResponseDto> lotes = loteRepository.findAll().stream()
-                .map(loteMapper::toResponseDTO)
+        List<LoteResponseDto> lotes = loteRepository.findAll().stream().map(vela -> {
+                    try {
+                        return loteMapper.toResponseDTO(vela);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Erro ao mapear Vela para VelaResponseDto", e);
+                    }
+                })
                 .toList();
 
         if (lotes.isEmpty()) {
@@ -78,8 +84,15 @@ public class LoteService {
     }
 
     public List<LoteResponseDto> listarLoteCasa() {
-        List<LoteResponseDto> lotes = loteRepository.findAllByLocalizacao(0).stream()
-                .map(loteMapper::toResponseDTO)
+        List<LoteResponseDto> lotes = loteRepository.findAllByLocalizacao(0)
+                .stream()
+                .map(lote -> {
+                    try {
+                        return loteMapper.toResponseDTO(lote);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Erro ao mapear Vela para VelaResponseDto", e);
+                    }
+                })
                 .toList();
 
         if (lotes.isEmpty()) {
@@ -87,13 +100,20 @@ public class LoteService {
         }
 
         return lotes;
+
     }
 
     public List<LoteResponseDto> listarLoteEstudio() {
-        List<LoteResponseDto> lotes = loteRepository.findAllByLocalizacao(1).stream()
-                .map(loteMapper::toResponseDTO)
+        List<LoteResponseDto> lotes = loteRepository.findAllByLocalizacao(1)
+                .stream()
+                .map(lote -> {
+                    try {
+                        return loteMapper.toResponseDTO(lote);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Erro ao mapear Vela para VelaResponseDto", e);
+                    }
+                })
                 .toList();
-
         if (lotes.isEmpty()) {
             throw new NoContentException("Não existe nenhum lote no banco de dados");
         }
@@ -104,39 +124,44 @@ public class LoteService {
     public LoteResponseDto obterLotePorId(Integer id) {
         Lote lote = loteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lote não encontrado com o id: " + id));
-        return loteMapper.toResponseDTO(lote);
+
+        try {
+            return loteMapper.toResponseDTO(lote);
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao mapear Vela para VelaResponseDto", e);
+        }
     }
 
     public LoteResponseDto updateLote(Integer id, LoteRequestDto loteRequestDTO) {
-
-        if (loteRequestDTO == null) {
-            throw new ValidationException("Os dados do lote são obrigatórios.");
-        }
-    
-        try {
-            Lote lote = loteRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Lote não encontrado com o id: " + id));
-    
-            lote.setQuantidade(loteRequestDTO.getQuantidade());
-            lote.setDataFabricacao(loteRequestDTO.getDataFabricacao());
-            lote.setDataValidade(loteRequestDTO.getDataValidade());
-            lote.setLocalizacao(loteRequestDTO.getLocalizacao());
-    
-            Vela vela = velaRepository.findById(loteRequestDTO.getFkVela())
-                    .orElseThrow(() -> new ResourceNotFoundException("Vela não encontrada com o id: " + loteRequestDTO.getFkVela()));
-            lote.setVela(vela);
-    
-            lote = loteRepository.save(lote);
-            return loteMapper.toResponseDTO(lote);
-            
-        } catch (DataIntegrityViolationException ex) {
-            throw new CustomDataIntegrityViolationException("Erro de integridade ao atualizar o lote: " + ex.getMessage());
-        } catch (Exception ex) {
-            if (!(ex instanceof ResourceNotFoundException)) {
-                throw new UnexpectedServerErrorException("Erro inesperado ao atualizar o lote: " + ex.getMessage());
-            }
-            throw ex; 
-        }
+return null;
+//        if (loteRequestDTO == null) {
+//            throw new ValidationException("Os dados do lote são obrigatórios.");
+//        }
+//
+//        try {
+//            Lote lote = loteRepository.findById(id)
+//                    .orElseThrow(() -> new ResourceNotFoundException("Lote não encontrado com o id: " + id));
+//
+//            lote.setQuantidade(loteRequestDTO.getQuantidade());
+//            lote.setDataFabricacao(loteRequestDTO.getDataFabricacao());
+//            lote.setDataValidade(loteRequestDTO.getDataValidade());
+//            lote.setLocalizacao(loteRequestDTO.getLocalizacao());
+//
+//            Vela vela = velaRepository.findById(loteRequestDTO.getFkVela())
+//                    .orElseThrow(() -> new ResourceNotFoundException("Vela não encontrada com o id: " + loteRequestDTO.getFkVela()));
+//            lote.setVela(vela);
+//
+//            lote = loteRepository.save(lote);
+//            return loteMapper.toResponseDTO(lote);
+//
+//        } catch (DataIntegrityViolationException ex) {
+//            throw new CustomDataIntegrityViolationException("Erro de integridade ao atualizar o lote: " + ex.getMessage());
+//        } catch (Exception ex) {
+//            if (!(ex instanceof ResourceNotFoundException)) {
+//                throw new UnexpectedServerErrorException("Erro inesperado ao atualizar o lote: " + ex.getMessage());
+//            }
+//            throw ex;
+//        }
     }
     
 

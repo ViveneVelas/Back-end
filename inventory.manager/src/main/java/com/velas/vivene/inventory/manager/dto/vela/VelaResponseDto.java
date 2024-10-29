@@ -11,6 +11,6 @@ public class VelaResponseDto {
     private Double preco;
     private String descricao;
     private String referencia;
-    private byte[] imagem;
+    private String imagem;
 
 }

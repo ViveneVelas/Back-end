@@ -6,6 +6,8 @@ import com.velas.vivene.inventory.manager.repository.VelaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 @RequiredArgsConstructor
 @Component
 public class LoteMapper {
@@ -21,7 +23,7 @@ public class LoteMapper {
         return lote;
     }
 
-    public LoteResponseDto toResponseDTO(Lote entity) {
+    public LoteResponseDto toResponseDTO(Lote entity) throws IOException {
         LoteResponseDto dto = new LoteResponseDto();
         dto.setId(entity.getId());
         dto.setQuantidade(entity.getQuantidade());

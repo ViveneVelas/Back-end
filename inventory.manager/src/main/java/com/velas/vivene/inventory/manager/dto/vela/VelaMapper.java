@@ -5,6 +5,7 @@ import com.velas.vivene.inventory.manager.entity.Vela;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
@@ -20,8 +21,9 @@ import com.velas.vivene.inventory.manager.service.ImagemService;
 public class VelaMapper {
 
     private final ImagemRepository imagemRepository;
-    private final ImagemService imagemService;
     private final S3BucketService s3BucketService;
+    private final ImagemService imagemService;
+    private final S3BucketService s3;
 
     public Vela toEntity(VelaRequestDto velaRequestDto) {
         if (velaRequestDto == null) {
@@ -37,6 +39,10 @@ public class VelaMapper {
         return vela;
     }
 
+    public byte[] resposta(Integer id) throws IOException {
+        return s3.buscarFoto(Integer.valueOf(id));
+    }
+
     public VelaResponseDto toResponseDTO(Vela vela) throws IOException {
         if (vela == null) {
             return null;
@@ -48,15 +54,10 @@ public class VelaMapper {
         responseDTO.setTamanho(vela.getTamanho());
         responseDTO.setPreco(vela.getPreco());
         responseDTO.setDescricao(vela.getDescricao());
-        Imagem imagem = imagemRepository.findById(vela.getFkImagem())
-        .orElseThrow(() -> new ResourceNotFoundException("Imagem não encontrada com o id: " + vela.getFkImagem()));
-        
-        responseDTO.setReferencia(imagem.getReferencia());
-
-        byte[] imagemBuscada = s3BucketService.buscarFoto(imagem.getId());
-
-        responseDTO.setImagem(imagemBuscada);
-
+//        responseDTO.setImagem(vela.getFkImagem());
+        Optional<Imagem> imagem = imagemRepository.findById(vela.getFkImagem());
+        byte[] res = resposta(vela.getFkImagem());
+        responseDTO.setImagem(Base64.getEncoder().encodeToString(res));
         return responseDTO;
     }
 }
