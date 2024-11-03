@@ -1,16 +1,16 @@
 package com.velas.vivene.inventory.manager.service;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import org.springframework.dao.DataIntegrityViolationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.velas.vivene.inventory.manager.commons.exceptions.*;
 import org.springframework.stereotype.Service;
 
-import com.velas.vivene.inventory.manager.commons.exceptions.CustomDataIntegrityViolationException;
-import com.velas.vivene.inventory.manager.commons.exceptions.NoContentException;
-import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
-import com.velas.vivene.inventory.manager.commons.exceptions.UnexpectedServerErrorException;
 import com.velas.vivene.inventory.manager.dto.lote.LoteMapper;
 import com.velas.vivene.inventory.manager.dto.lote.LoteRequestDto;
 import com.velas.vivene.inventory.manager.dto.lote.LoteResponseDto;
@@ -23,15 +23,25 @@ import com.velas.vivene.inventory.manager.repository.LoteRepository;
 import com.velas.vivene.inventory.manager.repository.LotesProximoDoVencimentoRepository;
 import com.velas.vivene.inventory.manager.repository.VelaRepository;
 
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
+import software.amazon.awssdk.core.SdkBytes;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.lambda.LambdaClient;
+import software.amazon.awssdk.services.lambda.model.InvokeRequest;
+import software.amazon.awssdk.services.lambda.model.InvokeResponse;
+import software.amazon.awssdk.services.lambda.model.LambdaException;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class LoteService {
+
+    Region region = Region.US_EAST_1;
+    S3Client s3 = S3Client.builder().region(region).build();
 
     private final LoteRepository loteRepository;
     private final LoteMapper loteMapper;
@@ -39,31 +49,60 @@ public class LoteService {
     private final LotesProximoDoVencimentoRepository lotesProximoDoVencimentoRepository;
     private final LotesProximosDoVencimentoMapper lotesProximosDoVencimentoMapper;
 
-    public LoteResponseDto criarLote(LoteRequestDto loteRequestDTO) {
-        Vela vela = velaRepository.findById(loteRequestDTO.getFkVela())
-                .orElseThrow(() -> new ResourceNotFoundException("Vela não encontrada com o id: " + loteRequestDTO.getFkVela()));
+    public LoteResponseDto criarLote(LoteRequestDto loteRequestDTO) throws IOException {
+        Vela vela = velaRepository.findById(loteRequestDTO.getFkVela()).orElseThrow(() -> new ResourceNotFoundException("Vela não encontrada com o id: " + loteRequestDTO.getFkVela()));
 
-        if (loteRequestDTO == null) {
-            throw new ValidationException("Os dados do lote são obrigatórios.");
-        }
+        Lote lote = loteMapper.toEntity(loteRequestDTO);
+        lote.setVela(vela);
+        lote = loteRepository.save(lote);
 
+        String nomeArq = "qrcode-id-" + lote.getId() + ".png";
+
+        String referenciaDoQrCode = lambdaConnection(nomeArq, vela.getNome(), vela.getDescricao(), LocalDate.now(), lote.getId());
+
+        lote.setCodigoQrCode(referenciaDoQrCode);
+        lote = loteRepository.save(lote);
+
+        return loteMapper.toResponseDTO(lote);
+    }
+
+
+    public String lambdaConnection(String titulo, String descricao, String velaDescricao, LocalDate dataDeCriacao, Integer id) {
+        String funcao = "gerador-de-qrcode";
+        Region region = Region.US_EAST_1;
+        String value = null;
+
+        LambdaClient awsLambda = LambdaClient.builder().region(region).build();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        InvokeResponse res = null;
         try {
-            Lote lote = loteMapper.toEntity(loteRequestDTO);
-            lote.setVela(vela);
-            lote = loteRepository.save(lote);
+            Map<String, String> dadosDoLote = new HashMap<>();
+            if (titulo != null) dadosDoLote.put("titulo", titulo);
+            if (descricao != null) dadosDoLote.put("descricao", descricao);
+            if (dataDeCriacao != null) dadosDoLote.put("dataDeCriacao", dataDeCriacao.toString());
+            if (id != null) dadosDoLote.put("id", id.toString());
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd_MM_yyyy");
-            String dataFormatada = LocalDate.now().format(formatter);
+            SdkBytes payload = SdkBytes.fromUtf8String(objectMapper.writeValueAsString(dadosDoLote));
 
-            lote.setCodigoQrCode(lote.getId()+"-"+lote.getVela().getId()+"-"+ dataFormatada);
-            lote = loteRepository.save(lote);
+            InvokeRequest request = InvokeRequest.builder()
+                    .functionName(funcao)
+                    .payload(payload)
+                    .build();
 
-            return loteMapper.toResponseDTO(lote);
-        } catch (DataIntegrityViolationException ex) {
-            throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao salvar o lote.");
-        } catch (Exception ex) {
-            throw new UnexpectedServerErrorException("Erro inesperado ao criar lote " + ex);
+            res = awsLambda.invoke(request);
+
+            value = res.payload().asUtf8String();
+            value = value.replace("\"", "");
+
+        } catch (LambdaException | JsonProcessingException e) {
+            System.err.println(e.getMessage());
+            System.exit(1);
         }
+
+        awsLambda.close();
+        return value;
     }
 
     public List<LoteResponseDto> listarLotes() {
@@ -192,5 +231,16 @@ return null;
         } catch (Exception ex) {
             throw new UnexpectedServerErrorException("Erro inesperado ao buscar os lotes próximos do vencimento.");
         }
+    }
+
+    public byte[] getQrCode(Integer id) throws IOException  {
+        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                .bucket("vivanevelas-s3-bucket")
+                .key("qr_codes/qrcode-id-" + id + ".jpg")
+                .build();
+
+        byte[] byteArray = s3.getObjectAsBytes(getObjectRequest).asByteArray();
+        Files.write(Paths.get("./download.jpg"), byteArray);
+        return byteArray;
     }
 }
