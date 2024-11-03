@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -43,7 +44,7 @@ public class LoteController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = LoteResponseDto.class))}),
             @ApiResponse(responseCode = "400", description = "Campos de lote estão incorretos",
                     content = @Content(mediaType = "application/json", schema = @Schema()))})
-    public ResponseEntity<LoteResponseDto> createLote(@Valid @RequestBody LoteRequestDto loteRequestDto) {
+    public ResponseEntity<LoteResponseDto> createLote(@Valid @RequestBody LoteRequestDto loteRequestDto) throws IOException {
         LoteResponseDto loteResponseDto = loteService.criarLote(loteRequestDto);
         return new ResponseEntity<>(loteResponseDto, HttpStatus.CREATED);
     }
@@ -183,6 +184,17 @@ public class LoteController {
     public ResponseEntity<List<LoteResponseDto>> getAllLotesEstudio() {
         List<LoteResponseDto> responseDtoList = loteService.listarLoteEstudio();
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
+    }
+
+    @Operation(summary="Busca o qrCode de um lote")
+    @GetMapping(value = "/{id}/qrcode", produces = "image/jpeg")
+    public ResponseEntity<byte[]> getFoto(@PathVariable Integer id) throws IOException {
+        byte[] imagem = loteService.getQrCode(id);
+        if (imagem == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok().body(imagem);
+        }
     }
 }
 
