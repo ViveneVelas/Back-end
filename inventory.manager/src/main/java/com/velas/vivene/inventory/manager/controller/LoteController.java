@@ -196,9 +196,6 @@ public class LoteController {
             return ResponseEntity.ok().body(imagem);
         }
     }
-}
-
-
 
     @GetMapping("/filtro-nome/{nome}")
     @Operation(summary = "Busca todos os lotes do estudio", description = """
