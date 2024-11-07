@@ -196,9 +196,6 @@ public class LoteController {
             return ResponseEntity.ok().body(imagem);
         }
     }
-}
-
-
 
     @GetMapping("/filtro-nome/{nome}")
     @Operation(summary = "Busca todos os lotes do estudio", description = """
@@ -217,5 +214,25 @@ public class LoteController {
     public ResponseEntity<List<List<LoteResponseDto>>> getNomeBusca(@PathVariable String nome) {
         List<List<LoteResponseDto>> responseDtoList = loteService.getNomeBusca(nome);
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
+    }
+
+    @PutMapping("/venda/{id}")
+    @Operation(summary = "Venda de um lote", description = """
+           # Venda de lote
+           ---
+           Esse endpoint realiza a venda de um lote.
+           ---
+           Nota:
+           - Id é obrigatório
+           - Campos não passados não serão alterados
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Venda realizada com sucesso (OK).",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = LoteResponseDto.class))}),
+            @ApiResponse(responseCode = "400", description = "Venda não realizada pois o lote não foi encontrado no banco de dados.",
+                    content = {@Content(mediaType = "application/json", schema = @Schema())})})
+    public ResponseEntity<LoteResponseDto> vendaLote(@PathVariable Integer id) {
+        loteService.vendaLote(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
