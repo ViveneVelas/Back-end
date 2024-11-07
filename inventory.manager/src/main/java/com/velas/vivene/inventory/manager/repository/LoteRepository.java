@@ -1,8 +1,9 @@
 package com.velas.vivene.inventory.manager.repository;
 
 import com.velas.vivene.inventory.manager.entity.Lote;
-import com.velas.vivene.inventory.manager.entity.Vela;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -17,4 +18,10 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
 
     @Query("SELECT l FROM Lote l WHERE LOWER(l.vela.nome) LIKE LOWER(CONCAT('%', :nome, '%')) AND l.localizacao = 1")
     List<Lote> findByNameIgnoreCaseEstudio(@Param("nome") String nome);
+
+    @Query("UPDATE Lote l SET l.quantidade = :quantidade WHERE l.id = :id")
+    @Modifying
+    @Transactional
+    void updateQuantidade(@Param("id") Integer id, @Param("quantidade") Integer quantidade);
+
 }

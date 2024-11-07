@@ -3,9 +3,8 @@ package com.velas.vivene.inventory.manager.service;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.velas.vivene.inventory.manager.commons.exceptions.*;
@@ -34,7 +33,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 
 import java.time.LocalDate;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -272,5 +270,15 @@ return null;
         byte[] byteArray = s3.getObjectAsBytes(getObjectRequest).asByteArray();
         Files.write(Paths.get("./download.jpg"), byteArray);
         return byteArray;
+    }
+
+    public void vendaLote(Integer id) {
+        Lote lote = loteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Lote não encontrado com o id: " + id));
+
+        Integer velasDisponivies = lote.getQuantidade();
+        Integer novaDisponibilidade = velasDisponivies - 1;
+
+        loteRepository.updateQuantidade(id, novaDisponibilidade);
     }
 }
