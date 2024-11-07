@@ -12,5 +12,4 @@ public class VelaResponseDto {
     private String descricao;
     private String referencia;
     private String imagem;
-
 }

@@ -54,8 +54,7 @@ public class VelaMapper {
         responseDTO.setTamanho(vela.getTamanho());
         responseDTO.setPreco(vela.getPreco());
         responseDTO.setDescricao(vela.getDescricao());
-//        responseDTO.setImagem(vela.getFkImagem());
-        Optional<Imagem> imagem = imagemRepository.findById(vela.getFkImagem());
+
         byte[] res = resposta(vela.getFkImagem());
         responseDTO.setImagem(Base64.getEncoder().encodeToString(res));
         return responseDTO;

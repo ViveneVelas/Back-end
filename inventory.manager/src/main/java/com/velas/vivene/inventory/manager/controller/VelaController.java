@@ -238,4 +238,60 @@ public class VelaController {
 
         return new ResponseEntity<>(arquivo, headers, HttpStatus.OK);
     }
+
+    @GetMapping("/buscar-nomes-velas")
+    @Operation(summary = "Busca todos os nomes das velas", description = """
+           # Busca todos os nomes das velas
+           ---
+           Esse endpoint busca todas as velas existentes
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Velas buscadas com sucesso (OK).",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VelaResponseDto.class))}),
+            @ApiResponse(responseCode = "204", description = "Não há velas no banco de dados.",
+                    content = { @Content(mediaType = "application/json", schema = @Schema())})}
+    )
+    public ResponseEntity<List<VelaResponseDto>> getAllNamesVelas() {
+        List<VelaResponseDto> responseDTOList = velaService.getAllNamesVelas();
+        return new ResponseEntity<>(responseDTOList, HttpStatus.OK);
+    }
+
+    @GetMapping("/filtro/{filtro}")
+    @Operation(summary = "Busca todos os nomes das velas", description = """
+           # Busca todos os nomes das velas
+           ---
+           Esse endpoint busca todas as velas existentes
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Velas buscadas com sucesso (OK).",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VelaResponseDto.class))}),
+            @ApiResponse(responseCode = "204", description = "Não há velas no banco de dados.",
+                    content = { @Content(mediaType = "application/json", schema = @Schema())})}
+    )
+    public ResponseEntity<List<VelaResponseDto>> filtroVelas(@PathVariable String filtro) {
+        List<VelaResponseDto> responseDTOList = velaService.filtroVelas(filtro);
+        return new ResponseEntity<>(responseDTOList, HttpStatus.OK);
+    }
+
+    @GetMapping("/filtro-nome/{nome}")
+    @Operation(summary = "Busca uma vela pelo Nome", description = """
+           # Busca uma vela existente pelo Nome
+           ---
+           Esse endpoint busca uma vela existente pelo Nome
+           ---
+           Nota:
+           O Nome é obrigatório
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Vela encontrada com sucesso (OK).",
+                    content = { @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = VelaResponseDto.class))}),
+            @ApiResponse(responseCode = "404", description = "Vela não encontrada.",
+                    content = { @Content(mediaType = "application/json", schema = @Schema())})}
+    )
+    public ResponseEntity<List<VelaResponseDto>> getNomeBusca(@PathVariable String nome) throws IOException {
+        List<VelaResponseDto> responseDTO = velaService.getNomeBusca(nome);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
 }

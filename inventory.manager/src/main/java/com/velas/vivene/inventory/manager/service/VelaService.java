@@ -232,4 +232,62 @@ public class VelaService {
         return GerarArquivosCsv.gerarArquivo(velas);
     }
 
+    public List<VelaResponseDto> getAllNamesVelas() {
+        List<VelaResponseDto> velas = velaRepository.findAll()
+                .stream()
+                .map(vela -> {
+                    try {
+                        return velaMapper.toResponseDTO(vela);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Erro ao mapear Vela para VelaResponseDto", e);
+                    }
+                })
+                .collect(Collectors.toList());
+
+
+        if (velas.isEmpty()) {
+            throw new NoContentException("Não existe nenhuma vela no banco de dados");
+        }
+
+        return velas;
+    }
+
+    public List<VelaResponseDto> filtroVelas(String orderBy) {
+        if(orderBy == null){
+            throw new ValidationException("O campo de ordenação é obrigatório.");
+        }
+
+        List<VelaResponseDto> velas = velaRepository.findAllOrderBy(orderBy)
+                .stream()
+                .map(vela -> {
+                    try {
+                        return velaMapper.toResponseDTO(vela);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Erro ao mapear Vela para VelaResponseDto", e);
+                    }
+                })
+                .collect(Collectors.toList());
+
+
+        if (velas.isEmpty()) {
+            throw new NoContentException("Não existe nenhuma vela no banco de dados");
+        }
+
+        return velas;
+    }
+
+    public List<VelaResponseDto> getNomeBusca(String nome) throws IOException {
+        List<VelaResponseDto> velas = velaRepository.findByNameIgnoreCase(nome)
+                .stream()
+                .map(vela -> {
+                    try {
+                        return velaMapper.toResponseDTO(vela);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Erro ao mapear Vela para VelaResponseDto", e);
+                    }
+                })
+                .collect(Collectors.toList());
+
+        return velas;
+    }
 }

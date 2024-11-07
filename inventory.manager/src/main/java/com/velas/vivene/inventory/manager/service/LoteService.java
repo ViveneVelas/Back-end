@@ -121,6 +121,36 @@ public class LoteService {
         return lotes;
     }
 
+    public List<List<LoteResponseDto>> getNomeBusca(String nome) {
+        List<LoteResponseDto> lotesCasa = loteRepository.findByNameIgnoreCaseCasa(nome)
+                .stream()
+                .map(lote -> {
+                    try {
+                        return loteMapper.toResponseDTO(lote);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Erro ao mapear Vela para VelaResponseDto", e);
+                    }
+                })
+                .toList();
+
+        List<LoteResponseDto> lotesEstudio = loteRepository.findByNameIgnoreCaseEstudio(nome)
+                .stream()
+                .map(lote -> {
+                    try {
+                        return loteMapper.toResponseDTO(lote);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Erro ao mapear Vela para VelaResponseDto", e);
+                    }
+                })
+                .toList();
+
+        List<List<LoteResponseDto>> returnList = new ArrayList<>();
+        returnList.add(lotesCasa);
+        returnList.add(lotesEstudio);
+
+        return returnList;
+    }
+
     public LoteResponseDto obterLotePorId(Integer id) {
         Lote lote = loteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lote não encontrado com o id: " + id));

@@ -15,7 +15,7 @@ public class GerarArquivosCsv {
         String dataHoraGeracao = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
         String versaoLayout = "01";
 
-        return String.format("%-2s%-5s%-19s%-2s", tipoRegistro, tipoArquivo, dataHoraGeracao, versaoLayout);
+        return String.format("%-2s;%-5s;%-19s;%-2s", tipoRegistro, tipoArquivo, dataHoraGeracao, versaoLayout);
     }
 
 
@@ -27,7 +27,7 @@ public class GerarArquivosCsv {
             String nome = String.format("%-30s", vela.getNomeVela());
             String totalVendido = String.format("%05d", vela.getTotalVendido());
 
-            corpo.append(String.format("%-2s%-5s%-30s%-5s", tipoRegistro, id, nome, totalVendido)).append("\n");
+            corpo.append(String.format("%-2s;%-5s;%-30s;%-5s", tipoRegistro, id, nome, totalVendido)).append("\n");
         }
         return corpo.toString();
     }
@@ -35,9 +35,9 @@ public class GerarArquivosCsv {
 
     private static String gerarTrailer(int totalRegistros) {
         String tipoRegistro = "01";
-        String quantidadeRegistros = String.format("%05d", totalRegistros);
+        String quantidadeRegistros = String.format("%05d;", totalRegistros);
 
-        return String.format("%-2s%-5s", tipoRegistro, quantidadeRegistros);
+        return String.format("%-2s;%-5s", tipoRegistro, quantidadeRegistros);
     }
 
 

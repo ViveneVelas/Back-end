@@ -184,8 +184,23 @@ public class LoteController {
         List<LoteResponseDto> responseDtoList = loteService.listarLoteEstudio();
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }
+
+    @GetMapping("/filtro-nome/{nome}")
+    @Operation(summary = "Busca todos os lotes do estudio", description = """
+           # Buscar lote
+           ---
+           Esse endpoint busca todos os lotes criados.
+           ---
+           Nota:
+           - N/A
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lotes encontrados com sucesso (OK).",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = LoteResponseDto.class))}),
+            @ApiResponse(responseCode = "400", description = "Lotes não encontrado no banco de dados.",
+                    content = {@Content(mediaType = "application/json", schema = @Schema())})})
+    public ResponseEntity<List<List<LoteResponseDto>>> getNomeBusca(@PathVariable String nome) {
+        List<List<LoteResponseDto>> responseDtoList = loteService.getNomeBusca(nome);
+        return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
+    }
 }
-
-
-
-
