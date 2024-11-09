@@ -1,4 +1,4 @@
-package com.velas.vivene.inventory.manager.commons;
+package com.velas.vivene.inventory.manager.commons.enuns;
 
 public enum Estado {
     ANDAMENTO("Andamento"),

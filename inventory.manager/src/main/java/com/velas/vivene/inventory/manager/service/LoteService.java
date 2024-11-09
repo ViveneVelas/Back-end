@@ -4,12 +4,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.velas.vivene.inventory.manager.commons.exceptions.*;
 import org.springframework.stereotype.Service;
-
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
 import com.velas.vivene.inventory.manager.dto.lote.LoteMapper;
 import com.velas.vivene.inventory.manager.dto.lote.LoteRequestDto;
 import com.velas.vivene.inventory.manager.dto.lote.LoteResponseDto;
@@ -33,13 +37,22 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 
 import java.time.LocalDate;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class LoteService {
 
+
     Region region = Region.US_EAST_1;
     S3Client s3 = S3Client.builder().region(region).build();
+
+//    private final String bucketName = "terraform-20240911223610647100000001";
+//    private final S3Client s3 = S3Client.builder().region(Region.US_EAST_1).build();
 
     private final LoteRepository loteRepository;
     private final LoteMapper loteMapper;
@@ -47,7 +60,10 @@ public class LoteService {
     private final LotesProximoDoVencimentoRepository lotesProximoDoVencimentoRepository;
     private final LotesProximosDoVencimentoMapper lotesProximosDoVencimentoMapper;
 
+
     public LoteResponseDto criarLote(LoteRequestDto loteRequestDTO) throws IOException {
+    public LoteResponseDto criarLote(LoteRequestDto loteRequestDTO) throws IOException, WriterException {
+
         Vela vela = velaRepository.findById(loteRequestDTO.getFkVela()).orElseThrow(() -> new ResourceNotFoundException("Vela não encontrada com o id: " + loteRequestDTO.getFkVela()));
 
         Lote lote = loteMapper.toEntity(loteRequestDTO);
@@ -56,12 +72,55 @@ public class LoteService {
 
         String nomeArq = "qrcode-id-" + lote.getId() + ".png";
 
+
         String referenciaDoQrCode = lambdaConnection(nomeArq, vela.getNome(), vela.getDescricao(), LocalDate.now(), lote.getId());
 
         lote.setCodigoQrCode(referenciaDoQrCode);
         lote = loteRepository.save(lote);
 
         return loteMapper.toResponseDTO(lote);
+        byte[] qrcode = gerarQrCode(nomeArq, vela.getNome(), vela.getDescricao(), LocalDate.now());
+
+        lote.setNomeQrCode(nomeArq);
+        lote = loteRepository.save(lote);
+
+        return loteMapper.toResponseDTO(lote, qrcode);
+    }
+
+    private byte[] gerarQrCode(String nomeArq, String titulo, String descricao, LocalDate dataDeCriacao) throws WriterException, IOException {
+
+        // Formatar o texto
+        String qrText = String.format("Titulo: %s\nDescricao: %s\nData De Criacao: %s", titulo, descricao, dataDeCriacao);
+
+        // Crio o Qr Code
+        int width = 300;
+        int height = 300;
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = qrCodeWriter.encode(qrText, BarcodeFormat.QR_CODE, width, height);
+
+        // Converter o QR Code para uma imagem PNG
+        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+        byte[] pngData = pngOutputStream.toByteArray();
+
+        // Salvar PNG no S3
+        /*
+        try {
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(nomeArq)
+                    .contentType("image/jpeg")
+                    .build();
+
+            s3.putObject(putObjectRequest, software.amazon.awssdk.core.sync.RequestBody.fromBytes(pngData));
+
+            String caminhoArquivoS3 = nomeArq;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        */
+        return pngData;
     }
 
 
@@ -118,6 +177,8 @@ public class LoteService {
         }
 
         return lotes;
+
+        return loteRepository.findAll().stream().map(loteMapper::toResponseDTO).toList();
     }
 
     public List<LoteResponseDto> listarLoteCasa() {
@@ -243,15 +304,29 @@ return null;
             List<LotesProximoDoVencimento> lotes = lotesProximoDoVencimentoRepository.findAll();
             List<LotesProximoDoVencimentoResponse> lotesResponse = new ArrayList<>();
 
+        Lote lote = loteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Lote não encontrado com o id: " + id));
+        return loteMapper.toResponseDTO(lote
+        );
+    }
+
+    public LoteResponseDto updateLote(Integer id, LoteRequestDto loteRequestDTO) {
+        Lote lote = loteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Lote não encontrado com o id: " + id));
+
+
             if (lotes.isEmpty()) {
                 throw new NoContentException("Não existe nenhum lote no banco de dados");
             }
+
 
             for (LotesProximoDoVencimento l : lotes) {
                 LotesProximoDoVencimentoResponse lotesR = new LotesProximoDoVencimentoResponse();
                 lotesR = lotesProximosDoVencimentoMapper.toResponseDto(l);
                 lotesResponse.add(lotesR);
             }
+
+        Vela vela = velaRepository.findById(loteRequestDTO.getFkVela()).orElseThrow(() -> new ResourceNotFoundException("Vela não encontrada com o id: " + loteRequestDTO.getFkVela()));
+        lote.setVela(vela);
+
 
             return lotesResponse;
         } catch (NoContentException ex) {

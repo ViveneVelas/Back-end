@@ -16,5 +16,6 @@ public class LoteResponseDto {
     private LocalDate dataValidade;
     private Integer localizacao;
     private String qrCode;
-
+    private String nomeArq;
+    private byte[] pngQrcode;
 }
