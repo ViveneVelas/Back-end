@@ -1,21 +1,20 @@
 package com.velas.vivene.inventory.manager.service;
 
-import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
-import com.velas.vivene.inventory.manager.dto.cliente.ClienteMapper;
-import com.velas.vivene.inventory.manager.dto.cliente.ClienteRequestDto;
-import com.velas.vivene.inventory.manager.dto.cliente.ClienteResponseDto;
-import com.velas.vivene.inventory.manager.dto.clientesmaiscompras.ClienteMaisComprasResponse;
-import com.velas.vivene.inventory.manager.dto.clientesmaiscompras.ClientesMaisComprasMapper;
-import com.velas.vivene.inventory.manager.entity.Cliente;
-import com.velas.vivene.inventory.manager.entity.ClientesMaisCompras;
-import com.velas.vivene.inventory.manager.repository.ClienteRepository;
-import com.velas.vivene.inventory.manager.repository.ClientesMaisComprasRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+import com.velas.vivene.inventory.manager.commons.*;
+import com.velas.vivene.inventory.manager.commons.exceptions.*;
+import com.velas.vivene.inventory.manager.dto.cliente.*;
+import com.velas.vivene.inventory.manager.dto.clientesmaiscompras.*;
+import com.velas.vivene.inventory.manager.entity.Cliente;
+import com.velas.vivene.inventory.manager.entity.view.ClientesMaisCompras;
+import com.velas.vivene.inventory.manager.repository.*;
+import jakarta.validation.ValidationException;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -27,21 +26,40 @@ public class ClienteService {
     private final ClientesMaisComprasMapper clientesMaisComprasMapper;
 
     public ClienteResponseDto createCliente(ClienteRequestDto clienteRequestDTO) {
-        Cliente cliente = clienteMapper.toEntity(clienteRequestDTO);
-        cliente = clienteRepository.save(cliente);
-        return clienteMapper.toResponseDTO(cliente);
+        if (clienteRequestDTO == null) {
+            throw new ValidationException("Os dados do cliente são obrigatórios.");
+        }
+        
+        try {
+            Cliente cliente = clienteMapper.toEntity(clienteRequestDTO);
+            cliente = clienteRepository.save(cliente);
+            return clienteMapper.toResponseDTO(cliente);
+        } catch (DataIntegrityViolationException ex) {
+            throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao salvar o cliente.");
+        } catch (Exception ex) {
+            throw new UnexpectedServerErrorException("Erro inesperado ao criar cliente " + ex);
+        }
     }
 
     public ClienteResponseDto updateCliente(Integer id, ClienteRequestDto clienteRequestDTO) {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o id: " + id));
 
-        cliente.setNome(clienteRequestDTO.getNome());
-        cliente.setTelefone(clienteRequestDTO.getTelefone());
-        cliente.setQtdPedidos(clienteRequestDTO.getQtdPedidos());
+        if (clienteRequestDTO == null) {
+            throw new ValidationException("Os dados do cliente são obrigatórios.");
+        }
 
-        cliente = clienteRepository.save(cliente);
-        return clienteMapper.toResponseDTO(cliente);
+        try {
+            cliente.setNome(clienteRequestDTO.getNome());
+            cliente.setTelefone(clienteRequestDTO.getTelefone());
+            cliente.setQtdPedidos(clienteRequestDTO.getQtdPedidos());
+            cliente = clienteRepository.save(cliente);
+            return clienteMapper.toResponseDTO(cliente);
+        } catch (DataIntegrityViolationException ex) {
+            throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao atualizar o cliente.");
+        } catch (Exception ex) {
+            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar cliente " + ex);
+        }
     }
 
     public void deleteCliente(Integer id) {
@@ -51,10 +69,16 @@ public class ClienteService {
     }
 
     public List<ClienteResponseDto> getAllClientes() {
-        return clienteRepository.findAll()
+        List<ClienteResponseDto> clientes = clienteRepository.findAll()
                 .stream()
                 .map(clienteMapper::toResponseDTO)
                 .collect(Collectors.toList());
+
+        if (clientes.isEmpty()) {
+            throw new NoContentException("Não existe nenhum cliente no banco de dados");
+        }
+
+        return clientes;
     }
 
     public ClienteResponseDto getClienteById(Integer id) {
@@ -65,14 +89,25 @@ public class ClienteService {
 
     public List<ClienteMaisComprasResponse> getClienteMaisCompras() {
         List<ClientesMaisCompras> clientes = clientesMaisComprasRepository.findAll();
-        List<ClienteMaisComprasResponse> clientesResponse = new ArrayList<>();
+        if (clientes.isEmpty()) {
+            throw new NoContentException("Nenhum cliente com mais compras encontrado.");
+        }
 
+        List<ClienteMaisComprasResponse> clientesResponse = new ArrayList<>();
         for (ClientesMaisCompras c : clientes) {
-            ClienteMaisComprasResponse clienteR = new ClienteMaisComprasResponse();
-            clienteR = clientesMaisComprasMapper.toDto(c);
+            ClienteMaisComprasResponse clienteR = clientesMaisComprasMapper.toDto(c);
             clientesResponse.add(clienteR);
         }
 
         return clientesResponse;
+    }
+
+    public byte[] criarArqTxt() throws IOException {
+        List<ClientesMaisCompras> clientes = clientesMaisComprasRepository.findAll();
+        return GerarArquivosTxt.gerarArquivoTxt(clientes);
+    }
+
+    public void lerArqTxt(byte[] file) throws IOException {
+        LerArquivos.importarArquivoTxt(file);
     }
 }

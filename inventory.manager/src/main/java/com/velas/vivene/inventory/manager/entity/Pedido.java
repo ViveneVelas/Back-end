@@ -27,10 +27,10 @@ public class Pedido {
     @Column(name = "descricao")
     private String descricao;
 
-    @Column(name = "tipoEntrega")
+    @Column(name = "tipo_entrega", length = 45)
     private String tipoEntrega;
 
-    @Column(name = "status_do_pedido")
+    @Column(name = "status_do_pedido", length = 45)
     private String status;
 
     @OneToOne
@@ -38,5 +38,5 @@ public class Pedido {
     private Cliente cliente;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<PedidoLote> pedidoLotes = new ArrayList<>();
+    private List<PedidoVela> pedidoVelas = new ArrayList<>();
 }

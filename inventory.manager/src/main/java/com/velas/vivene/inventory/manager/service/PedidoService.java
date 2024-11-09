@@ -1,24 +1,52 @@
 package com.velas.vivene.inventory.manager.service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+import com.velas.vivene.inventory.manager.commons.Pagamento;
+import com.velas.vivene.inventory.manager.commons.exceptions.CustomDataIntegrityViolationException;
+import com.velas.vivene.inventory.manager.commons.exceptions.NoContentException;
 import com.velas.vivene.inventory.manager.commons.enuns.Pagamento;
 import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
+import com.velas.vivene.inventory.manager.commons.exceptions.UnexpectedServerErrorException;
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoMapper;
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoRequestDto;
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoResponseDto;
-import com.velas.vivene.inventory.manager.dto.pedidolote.PedidoLoteRequestDto;
+import com.velas.vivene.inventory.manager.dto.pedidovela.PedidoVelaRequestDto;
+import com.velas.vivene.inventory.manager.commons.exceptions.*;
+import com.velas.vivene.inventory.manager.entity.*;
+import jakarta.persistence.criteria.*;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+import com.velas.vivene.inventory.manager.dto.pedido.*;
 import com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses.QuantidadeVendasSeisMesesMapper;
 import com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses.QuantidadeVendasSeisMesesResponse;
+import com.velas.vivene.inventory.manager.dto.top5pedidos.TopCincoPedidosMapper;
+import com.velas.vivene.inventory.manager.dto.top5pedidos.TopCincoPedidosResponse;
+import com.velas.vivene.inventory.manager.entity.Cliente;
+import com.velas.vivene.inventory.manager.entity.Pedido;
+import com.velas.vivene.inventory.manager.entity.PedidoVela;
+import com.velas.vivene.inventory.manager.entity.view.QuantidadeVendasSeisMeses;
+import com.velas.vivene.inventory.manager.entity.view.TopCincoPedidos;
 import com.velas.vivene.inventory.manager.entity.*;
 import com.velas.vivene.inventory.manager.repository.LoteRepository;
 import com.velas.vivene.inventory.manager.repository.PedidoRepository;
 import com.velas.vivene.inventory.manager.repository.QuantidadeVendasSeisMesesRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.velas.vivene.inventory.manager.repository.TopCincoPedidosRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import com.velas.vivene.inventory.manager.repository.*;
+import jakarta.persistence.EntityManager;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import jakarta.validation.ValidationException;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -26,55 +54,122 @@ public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
     private final PedidoMapper pedidoMapper;
-    private final LoteRepository loteRepository;
+    private final PedidoVelaService pedidoVelaService;
+    private final VelaRepository velaRepository;
+    private final PedidoVelaRepository pedidoVelaRepository;
+    private final ClienteRepository clienteRepository;
     private final QuantidadeVendasSeisMesesRepository quantidadeVendasSeisMesesRepository;
     private final QuantidadeVendasSeisMesesMapper quantidadeVendasSeisMesesMapper;
+    private final TopCincoPedidosRepository topCincoPedidosRepository;
+    private final LoteService loteService;
+    private final TopCincoPedidosMapper topCincoPedidosMapper;
+    private final EntityManager entityManager;
 
     public PedidoResponseDto criarPedido(PedidoRequestDto pedidoRequest) {
-        Pedido pedido = pedidoMapper.toEntity(pedidoRequest);
-        List<PedidoLote> pedidoLotes = new ArrayList<>();
 
-        for (PedidoLoteRequestDto pedidoLoteRequest : pedidoRequest.getPedidoLotes()) {
-            Optional<Lote> lote = loteRepository.findById(pedidoLoteRequest.getLoteId());
-            if(lote.get() == null){
-                return null;
-            }else {
-
-                PedidoLote pedidoLote = new PedidoLote();
-                pedidoLote.setLote(lote.get());
-                pedidoLote.setPedido(pedido);
-                pedido.getPedidoLotes().add(pedidoLote);
-
-                pedidoLotes.add(pedidoLote);
-            }
+        if (pedidoRequest == null) {
+            throw new ValidationException("Os dados do pedido são obrigatórios.");
         }
 
-        pedido.setPedidoLotes(pedidoLotes);
-        Pedido pedidoSave = pedidoRepository.save(pedido);
-        return pedidoMapper.toResponseDTO(pedidoSave);
+        try {
+            Pedido novoPedido = pedidoMapper.toEntity(pedidoRequest);
+
+            Pedido pedidoSalvo = pedidoRepository.save(novoPedido);
+
+            List<PedidoVela> pedidoVelas = new ArrayList<>();
+            for (VelaPedidoListaDto item : pedidoRequest.getListaVelas()) {
+                Vela vela = velaRepository.findById(item.getIdVela())
+                        .orElseThrow(() -> new RuntimeException("Vela não encontrada"));
+
+                PedidoVela pedidoVela = new PedidoVela();
+                pedidoVela.setPedido(pedidoSalvo);
+                pedidoVela.setVela(vela);
+                pedidoVela.setQuantidade(item.getQtdVela());
+                pedidoVelas.add(pedidoVela);
+                item.setNomeVela(pedidoVela.getVela().getNome());
+            }
+
+            pedidoVelaRepository.saveAll(pedidoVelas);
+
+            return pedidoMapper.toResponseDTO(pedidoSalvo, pedidoRequest.getListaVelas());
+        } catch (DataIntegrityViolationException ex) {
+            throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao salvar o pedido.");
+        } catch (Exception ex) {
+            throw new UnexpectedServerErrorException("Erro inesperado ao criar pedido " + ex);
+        }
     }
+
 
     public PedidoResponseDto updatePedido(Integer id, PedidoRequestDto pedidoRequestDTO) {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado com o id: " + id));
 
-        pedido.setDtPedido(pedidoRequestDTO.getDtPedido());
-        pedido.setDescricao(pedidoRequestDTO.getDescricao());
-        pedido.setTipoEntrega(pedidoRequestDTO.getTipoEntrega());
-        pedido.setStatus(pedidoRequestDTO.getStatus());
+        if (pedidoRequestDTO == null) {
+            throw new ValidationException("Os dados do pedido são obrigatórios.");
+        }
 
-        Pedido updatedPedido = pedidoRepository.save(pedido);
-        return pedidoMapper.toResponseDTO(updatedPedido);
+        try {
+            pedido.setDtPedido(pedidoRequestDTO.getDtPedido());
+            pedido.setDescricao(pedidoRequestDTO.getDescricao());
+            pedido.setTipoEntrega(pedidoRequestDTO.getTipoEntrega());
+            pedido.setStatus(pedidoRequestDTO.getStatus());
+
+            Pedido updatedPedido = pedidoRepository.save(pedido);
+            return pedidoMapper.toResponseDTO(updatedPedido, pedidoRequestDTO.getListaVelas());
+        } catch (DataIntegrityViolationException ex) {
+            throw new CustomDataIntegrityViolationException("Violação de integridade de dados ao atualizar o pedido.");
+        } catch (Exception ex) {
+            throw new UnexpectedServerErrorException("Erro inesperado ao atualizar pedido " + ex);
+        }
     }
 
-    public PedidoResponseDto finalizaPedido(Integer id) {
-        Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado com o id: " + id));
+    public List<PedidoResponseDto> getAllPedidos() {
+        try {
+            List<Pedido> pedidos = pedidoRepository.findAll();
+            return pedidos.stream()
+                    .map(pedido -> {
+                        List<VelaPedidoListaDto> listaVelas = pedido.getPedidoVelas().stream()
+                                .map(pedidoVela -> new VelaPedidoListaDto(
+                                        pedidoVela.getVela().getId(),
+                                        pedidoVela.getVela().getNome(),
+                                        pedidoVela.getQuantidade()
+                                ))
+                                .collect(Collectors.toList());
+                        return pedidoMapper.toResponseDTO(pedido, listaVelas);
+                    })
+                    .collect(Collectors.toList());
+        } catch (Exception ex) {
+            throw new UnexpectedServerErrorException("Erro inesperado ao listar pedidos " + ex);
+        }
+    }
 
-        pedido.setStatus(Pagamento.FINALIADO.getDescricao());
+    public List<LocalDate> getAllDates() {
+        try {
+            List<LocalDate> pedidos = pedidoRepository.findAllDistinctOrderByDtPedidoAsc();
+            return pedidos;
+        } catch (Exception ex) {
+            throw new UnexpectedServerErrorException("Erro inesperado ao listar pedidos " + ex);
+        }
+    }
 
-        Pedido updatedPedido = pedidoRepository.save(pedido);
-        return pedidoMapper.toResponseDTO(updatedPedido);
+    public List<PedidoCalendarioResponseDto> getAllPedidosCalendario() {
+        try {
+            List<Pedido> pedidos = pedidoRepository.findAll();
+            return pedidos.stream()
+                    .map(pedido -> {
+                        List<VelaPedidoListaDto> listaVelas = pedido.getPedidoVelas().stream()
+                                .map(pedidoVela -> new VelaPedidoListaDto(
+                                        pedidoVela.getVela().getId(),
+                                        pedidoVela.getVela().getNome(),
+                                        pedidoVela.getQuantidade()
+                                ))
+                                .collect(Collectors.toList());
+                        return pedidoMapper.toResponseDTOC(pedido, listaVelas);
+                    })
+                    .collect(Collectors.toList());
+        } catch (Exception ex) {
+            throw new UnexpectedServerErrorException("Erro inesperado ao listar pedidos " + ex);
+        }
     }
 
     public void deletePedido(Integer id) {
@@ -83,22 +178,72 @@ public class PedidoService {
         pedidoRepository.delete(pedido);
     }
 
-    public List<PedidoResponseDto> getAllPedidos() {
-        return pedidoRepository.findAll()
-                .stream()
-                .map(pedidoMapper::toResponseDTO)
+    public List<PedidoResponseDto> getAllPedidosFiltro(LocalDate dtValidade, String nomeCliente, String nomeVela ) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Pedido> query = cb.createQuery(Pedido.class);
+        Root<Pedido> root = query.from(Pedido.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (dtValidade != null) {
+            predicates.add(cb.equal(root.get("dtPedido"), dtValidade));
+        }
+
+        if (nomeCliente != null) {
+            Join<Pedido, Cliente> clienteJoin = root.join("cliente");
+            predicates.add(cb.like(clienteJoin.get("nome"), "%" + nomeCliente + "%"));
+        }
+
+
+        if (nomeVela != null) {
+            Join<Pedido, PedidoVela> pedidoVelas = root.join("pedidoVelas");
+                predicates.add(cb.like(pedidoVelas.get("vela").get("nome"), "%" + nomeVela + "%" ));
+        }
+
+        query.select(root).where(cb.and(predicates.toArray(new Predicate[0])));
+
+        List<Pedido> pedidos = entityManager.createQuery(query).getResultList();
+
+        return pedidos.stream()
+                .map(pedido -> {
+                    List<VelaPedidoListaDto> listaVelas = pedido.getPedidoVelas().stream()
+                            .map(pedidoVela -> new VelaPedidoListaDto(
+                                    pedidoVela.getVela().getId(),
+                                    pedidoVela.getVela().getNome(),
+                                    pedidoVela.getQuantidade()
+                            ))
+                            .collect(Collectors.toList());
+                    return pedidoMapper.toResponseDTO(pedido, listaVelas);
+                })
                 .collect(Collectors.toList());
     }
 
-
     public PedidoResponseDto getPedidoById(Integer id) {
-        Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado com o id: " + id));
-        return pedidoMapper.toResponseDTO(pedido);
+        try {
+            Pedido pedido = pedidoRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado com ID: " + id));
+
+            List<VelaPedidoListaDto> listaVelas = pedido.getPedidoVelas().stream()
+                    .map(pedidoVela -> new VelaPedidoListaDto(
+                            pedidoVela.getVela().getId(),
+                            pedidoVela.getVela().getNome(),
+                            pedidoVela.getQuantidade()
+                    ))
+                    .collect(Collectors.toList());
+
+            return pedidoMapper.toResponseDTO(pedido, listaVelas);
+        } catch (ResourceNotFoundException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new UnexpectedServerErrorException("Erro inesperado ao buscar pedido por ID " + ex);
+        }
     }
 
     public List<QuantidadeVendasSeisMesesResponse> getQuantidadeVendasSeisMeses() {
         List<QuantidadeVendasSeisMeses> vendas = quantidadeVendasSeisMesesRepository.findAll();
+        if (vendas.isEmpty()) {
+            throw new NoContentException("Não existe nenhuma venda no banco de dados");
+        }
         List<QuantidadeVendasSeisMesesResponse> vendasResponse = new ArrayList<>();
 
         for (QuantidadeVendasSeisMeses v : vendas) {
@@ -109,4 +254,24 @@ public class PedidoService {
 
         return vendasResponse;
     }
+
+
+    public List<TopCincoPedidosResponse> getTopCincoPedidos() {
+        List<TopCincoPedidos> pedidos = topCincoPedidosRepository.findAll();
+
+        if (pedidos.isEmpty()) {
+            throw new NoContentException("Não existe nenhum top cinco pedidos no banco de dados");
+        }
+
+        List<TopCincoPedidosResponse> pedidosResponse = new ArrayList<>();
+
+        for (TopCincoPedidos p : pedidos) {
+            TopCincoPedidosResponse pedidoR = new TopCincoPedidosResponse();
+            pedidoR = topCincoPedidosMapper.toDto(p);
+            pedidosResponse.add(pedidoR);
+        }
+
+        return pedidosResponse;
+    }
+
 }

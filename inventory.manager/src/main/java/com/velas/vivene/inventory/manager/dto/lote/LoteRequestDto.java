@@ -14,10 +14,10 @@ public class LoteRequestDto {
     @NotNull(message = "A quantidade é obrigatória")
     private Integer quantidade;
 
-    @NotNull(message = "A data de fabricação é obrigatória")
+//    @NotNull(message = "A data de fabricação é obrigatória")
     private LocalDate dataFabricacao;
 
-    @NotNull(message = "A data de validade é obrigatória")
+//    @NotNull(message = "A data de validade é obrigatória")
     private LocalDate dataValidade;
 
     @NotNull(message = "A localização é obrigatória")

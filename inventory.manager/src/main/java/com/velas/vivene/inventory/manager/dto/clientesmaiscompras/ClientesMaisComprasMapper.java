@@ -1,6 +1,6 @@
 package com.velas.vivene.inventory.manager.dto.clientesmaiscompras;
 
-import com.velas.vivene.inventory.manager.entity.ClientesMaisCompras;
+import com.velas.vivene.inventory.manager.entity.view.ClientesMaisCompras;
 import org.springframework.stereotype.Component;
 
 @Component

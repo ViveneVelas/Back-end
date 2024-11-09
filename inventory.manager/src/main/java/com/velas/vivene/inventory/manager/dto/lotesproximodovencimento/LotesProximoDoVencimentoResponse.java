@@ -11,5 +11,5 @@ public class LotesProximoDoVencimentoResponse {
     private LocalDate dataFabricacao;
     private LocalDate dataValidade;
     private Integer qtdDisponivel;
-    private Integer diasVencimento;
+    private Integer localizacao;
 }

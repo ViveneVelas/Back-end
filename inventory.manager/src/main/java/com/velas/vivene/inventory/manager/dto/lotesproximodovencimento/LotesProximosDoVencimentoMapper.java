@@ -1,6 +1,6 @@
 package com.velas.vivene.inventory.manager.dto.lotesproximodovencimento;
 
-import com.velas.vivene.inventory.manager.entity.LotesProximoDoVencimento;
+import com.velas.vivene.inventory.manager.entity.view.LotesProximoDoVencimento;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,7 +16,7 @@ public class LotesProximosDoVencimentoMapper {
         response.setDataFabricacao(lote.getDataFabricacao());
         response.setDataValidade(lote.getDataValidade());
         response.setQtdDisponivel(lote.getQtdDisponivel());
-        response.setDiasVencimento(lote.getDiasVencimento());
+        response.setLocalizacao(lote.getLocalizacao());
 
         return response;
     }

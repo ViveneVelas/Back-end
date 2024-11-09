@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "Clientes")
+@Table(name = "clientes")
 public class Cliente {
 
     @Id
@@ -15,13 +15,13 @@ public class Cliente {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "nome")
+    @Column(name = "nome", length = 45)
     private String nome;
 
-    @Column(name = "telefone")
+    @Column(name = "telefone", length = 11)
     private String telefone;
 
-    @Column(name = "qtdPedidos")
+    @Column(name = "qtd_pedidos")
     private Integer qtdPedidos;
 
 }

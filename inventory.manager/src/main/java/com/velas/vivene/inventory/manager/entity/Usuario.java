@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "Usuario")
+@Table(name = "usuario")
 public class Usuario {
 
     @Id
@@ -19,7 +19,7 @@ public class Usuario {
     @Column(name = "nome")
     private String nome;
 
-    @Column(name = "telefone")
+    @Column(name = "telefone", length = 11)
     private String telefone;
 
     @Column(name="ultimo_acesso")

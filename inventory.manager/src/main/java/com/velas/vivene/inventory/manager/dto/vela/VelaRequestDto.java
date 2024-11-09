@@ -20,4 +20,7 @@ public class VelaRequestDto {
 
     @NotBlank
     private String descricao;
+
+    @NotNull
+    private byte[] imagem;
 }

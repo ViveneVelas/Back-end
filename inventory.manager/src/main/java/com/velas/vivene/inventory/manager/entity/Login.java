@@ -6,7 +6,7 @@ import lombok.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "Login")
+@Table(name = "login")
 public class Login {
 
     @Id
@@ -14,10 +14,10 @@ public class Login {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "email")
+    @Column(name = "email", length = 45)
     private String email;
 
-    @Column(name = "senha")
+    @Column(name = "senha", length = 50)
     private String senha;
 
 }

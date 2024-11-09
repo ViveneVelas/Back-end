@@ -1,6 +1,6 @@
 package com.velas.vivene.inventory.manager.dto.top5velasmaisvendidas;
 
-import com.velas.vivene.inventory.manager.entity.TopCincoVelas;
+import com.velas.vivene.inventory.manager.entity.view.TopCincoVelas;
 import org.springframework.stereotype.Component;
 
 @Component

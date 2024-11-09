@@ -1,5 +1,6 @@
 package com.velas.vivene.inventory.manager.controller;
 
+import com.velas.vivene.inventory.manager.dto.vela.VelaResponseDto;
 import com.velas.vivene.inventory.manager.dto.cliente.ClienteResponseDto;
 import com.velas.vivene.inventory.manager.dto.velamaisvendida.VelaMaisVendidaResponse;
 import com.velas.vivene.inventory.manager.dto.venda.VendaRequestDto;
@@ -30,6 +31,18 @@ public class VendaController {
     private final VendaService vendaService;
 
     @PostMapping
+    @Operation(summary = "Cria uma nova venda", description = """
+           # Criar venda
+           ---
+           Esse endpoint transforma um pedido em uma venda final
+           ---
+           Nota:
+           Todos os atributos são obrigatórios
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Venda criada com sucesso (OK).",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = VendaResponseDto.class))}),
+            @ApiResponse(responseCode = "400", description = "Campos de venda estão incorretos",
     @Operation(summary = "Cria uma nova Venda", description = """
           # Cria Venda
           ---
@@ -51,6 +64,22 @@ public class VendaController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Altera uma venda por id", description = """
+           # Alterar venda
+           ---
+           Esse endpoint altera os dados de uma venda.
+           ---
+           Nota:
+           - Id é obrigatório
+           - Campos não passados não serão alterados
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Venda alterada com sucesso (OK).",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = VendaResponseDto.class))}),
+            @ApiResponse(responseCode = "404", description = "Venda não encontrada.",
+                    content = {@Content(mediaType = "application/json", schema = @Schema())}),
+            @ApiResponse(responseCode = "400", description = "Campos de venda estão incorretos",
+                    content = @Content(mediaType = "application/json", schema = @Schema()))})
     @Operation(summary = "Atualiza uma venda", description = """
           # Atualiza Venda
           ---
@@ -76,6 +105,20 @@ public class VendaController {
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
+    @GetMapping
+    @Operation(summary = "Busca vendas", description = """
+           # Buscar todas as vendas
+           ---
+           Esse endpoint Busca todas as vendas cadastradas.
+           ---
+           Nota:
+           - N/A
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Venda  encontradas (OK).",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = VendaResponseDto.class))}),
+            @ApiResponse(responseCode = "400", description = "Não possui vendas no banco de dados",
+                    content = @Content(mediaType = "application/json", schema = @Schema()))})
     @DeleteMapping("/{id}")
     @Operation(summary = "Deleta uma Venda", description = """
           # Deleta Venda
@@ -121,6 +164,20 @@ public class VendaController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Busca uma venda por id", description = """
+           # Buscar venda
+           ---
+           Esse endpoint busca uma venda a partir de um ID.
+           ---
+           Nota:
+           - Id é obrigatório
+           - Campos não passados não serão alterados
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Venda encontrada com sucesso (OK).",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = VendaResponseDto.class))}),
+            @ApiResponse(responseCode = "404", description = "Venda não encontrada.",
+                    content = {@Content(mediaType = "application/json", schema = @Schema())})})
     @Operation(summary = "Busca uma venda por ID", description = """
             # Busca uma Venda
             ---
@@ -137,11 +194,46 @@ public class VendaController {
                     content = {@Content(schema = @Schema())})
     }
     )
+               
     public ResponseEntity<VendaResponseDto> getVendaById(@PathVariable Integer id) {
         VendaResponseDto responseDTO = vendaService.getVendaById(id);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Deleta uma venda por id", description = """
+           # Deletar venda
+           ---
+           Esse endpoint deleta os dados de uma venda.
+           ---
+           Nota:
+           - Id é obrigatório
+           - Quando deletada não será possivel recuperar
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Venda deletada com sucesso (OK).",
+                    content = {@Content(mediaType = "application/json", schema = @Schema())}),
+            @ApiResponse(responseCode = "404", description = "Venda não encontrada.",
+                    content = {@Content(mediaType = "application/json", schema = @Schema())})})
+    public ResponseEntity<Void> deleteVenda(@PathVariable Integer id) {
+        vendaService.deleteVenda(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/semanal")
+    @Operation(summary = "Busca vendas realizadas na semana", description = """
+           # Buscar vendas semanais
+           ---
+           Esse endpoint busca as vendas semanais
+           ---
+           Nota:
+           -N/A
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Vendas encontradas com sucesso (OK).",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = VendaResponseDto.class))}),
+            @ApiResponse(responseCode = "400", description = "Vendas não encontradas no banco de dados.",
+                    content = {@Content(mediaType = "application/json", schema = @Schema())})})
     @GetMapping("/semanal")
     @Operation(summary = "Busca vendas semanal", description = """
             # Busca Vendas semanais
@@ -164,6 +256,19 @@ public class VendaController {
     }
 
     @GetMapping("/semanal/quantidade")
+    @Operation(summary = "Busca quantidade de vendas realizadas na semana", description = """
+           # Buscar quantidade de vendas semanais
+           ---
+           Esse endpoint busca as quantidade de vendas semanais
+           ---
+           Nota:
+           -N/A
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Quantidade encontrada com sucesso (OK).",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = VendaResponseDto.class))}),
+            @ApiResponse(responseCode = "400", description = "Vendas não encontradas no banco de dados.",
+                    content = {@Content(mediaType = "application/json", schema = @Schema())})})
     @Operation(summary = "Busca quantidade de vendas semanal", description = """
             # Busca Quantidade Vendas semanais
             ---
