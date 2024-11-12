@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 @Data
 public class QuantidadeVendasSeisMesesResponse {
-    private LocalDate mesAno;
-
+    private LocalDate mes;
+    private LocalDate ano;
     private Integer qtdPedidosConcluidos;
 }

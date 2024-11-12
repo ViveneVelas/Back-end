@@ -137,6 +137,22 @@ public class PedidoController {
         return new ResponseEntity<>(responseDTOList, HttpStatus.OK);
     }
 
+    @GetMapping("/datas/hoje")
+    @Operation(summary = "Busca todos os pedidos", description = """
+           # Busca todos os pedidos
+           ---
+           Esse endpoint busca todos os pedidos existentes
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pedidos buscados com sucesso.",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDto.class))}),
+            @ApiResponse(responseCode = "204", description = "Nenhum pedido encontrado.",
+                    content = { @Content(mediaType = "application/json", schema = @Schema())})})
+    public ResponseEntity<List<LocalDate>> getAllDatesNow() {
+        List<LocalDate> responseDTOList = pedidoService.getAllDatesFiltro();
+        return new ResponseEntity<>(responseDTOList, HttpStatus.OK);
+    }
+
     @GetMapping("/calendario")
     @Operation(summary = "Busca todos os pedidos detalhe calendario", description = """
            # Busca todos os pedidos
