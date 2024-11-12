@@ -149,6 +149,15 @@ public class PedidoService {
         }
     }
 
+    public List<LocalDate> getAllDatesFiltro() {
+        try {
+            List<LocalDate> pedidos = pedidoRepository.findAllDistinctOrderByDtPedidoAscNow();
+            return pedidos;
+        } catch (Exception ex) {
+            throw new UnexpectedServerErrorException("Erro inesperado ao listar pedidos " + ex);
+        }
+    }
+
     public List<PedidoCalendarioResponseDto> getAllPedidosCalendario() {
         try {
             List<Pedido> pedidos = pedidoRepository.findAll();

@@ -11,4 +11,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
 
     @Query("SELECT p.dtPedido FROM Pedido p GROUP BY p.dtPedido ORDER BY p.dtPedido ASC")
     List<LocalDate> findAllDistinctOrderByDtPedidoAsc();
+
+    @Query("SELECT p.dtPedido FROM Pedido p WHERE p.dtPedido >= CURRENT_DATE  GROUP BY p.dtPedido ORDER BY p.dtPedido ASC")
+    List<LocalDate> findAllDistinctOrderByDtPedidoAscNow();
 }

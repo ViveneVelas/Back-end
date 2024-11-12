@@ -1,6 +1,10 @@
 package com.velas.vivene.inventory.manager.commons;
 
+import com.velas.vivene.inventory.manager.entity.Cliente;
 import com.velas.vivene.inventory.manager.entity.view.ClientesMaisCompras;
+import com.velas.vivene.inventory.manager.repository.ClienteRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -8,10 +12,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Optional;
+@Service
+@RequiredArgsConstructor
 public class LerArquivos {
 
-    public static void importarArquivoTxt(byte[] nomeArq) throws IOException {
+    public final ClienteRepository clienteRepository;
+
+    public void importarArquivoTxt(byte[] nomeArq) throws IOException {
         try {
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(new ByteArrayInputStream(nomeArq), StandardCharsets.UTF_8)
@@ -51,6 +59,12 @@ public class LerArquivos {
             System.out.println("Dados importados com sucesso!");
 
             for (ClientesMaisCompras cliente : clientes) {
+                Cliente cl = new Cliente();
+                cl.setId(cliente.getId());
+                cl.setNome(cliente.getNomeCliente());
+                cl.setTelefone("null");
+                cl.setQtdPedidos(cliente.getNumPedidos());
+                clienteRepository.save(cl);
                 System.out.println("ID: " + cliente.getId() + ", Nome: " + cliente.getNomeCliente() + ", Pedidos: " + cliente.getNumPedidos());
             }
 
@@ -59,7 +73,7 @@ public class LerArquivos {
         }
     }
 
-    private static void tratarHeader(String linha) {
+    private void tratarHeader(String linha) {
         // Extrai os campos do header
         String tipoArquivo = linha.substring(2, 12).trim();
         String dataHoraGeracao = linha.substring(12, 31).trim();
@@ -75,7 +89,7 @@ public class LerArquivos {
         System.out.println();
     }
 
-    private static ClientesMaisCompras tratarCorpo(String linha) {
+    private ClientesMaisCompras tratarCorpo(String linha) {
         // Extrai os campos do corpo (registro de cliente)
         int id = Integer.parseInt(linha.substring(2, 7).trim());
         String nomeCliente = linha.substring(7, 47).trim();
@@ -88,7 +102,7 @@ public class LerArquivos {
         return cliente;
     }
 
-    private static void tratarTrailer(String linha, int qtdRegistrosLidos) {
+    private void tratarTrailer(String linha, int qtdRegistrosLidos) {
         // Extrai os campos do trailer
         int qtdRegistros = Integer.parseInt(linha.substring(2, 7).trim());
 

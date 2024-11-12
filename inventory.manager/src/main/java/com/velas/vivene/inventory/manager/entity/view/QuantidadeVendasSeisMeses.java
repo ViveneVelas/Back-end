@@ -16,8 +16,11 @@ public class QuantidadeVendasSeisMeses {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "mes_ano")
-    private LocalDate mesAno;
+    @Column(name = "mes")
+    private LocalDate mes;
+
+    @Column(name = "ano")
+    private LocalDate ano;
 
     @Column(name = "quantidade_pedidos_concluidos")
     private Integer qtdPedidosConcluidos;

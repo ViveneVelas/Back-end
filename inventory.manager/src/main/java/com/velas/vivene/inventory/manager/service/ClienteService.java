@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final LerArquivos lerArquivos;
     private final ClienteMapper clienteMapper;
     private final ClientesMaisComprasRepository clientesMaisComprasRepository;
     private final ClientesMaisComprasMapper clientesMaisComprasMapper;
@@ -108,6 +109,6 @@ public class ClienteService {
     }
 
     public void lerArqTxt(byte[] file) throws IOException {
-        LerArquivos.importarArquivoTxt(file);
+        lerArquivos.importarArquivoTxt(file);
     }
 }

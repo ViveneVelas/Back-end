@@ -12,7 +12,8 @@ public class QuantidadeVendasSeisMesesMapper {
         }
 
         QuantidadeVendasSeisMesesResponse response = new QuantidadeVendasSeisMesesResponse();
-        response.setMesAno(quantidadeVendasSeisMeses.getMesAno());
+        response.setAno(quantidadeVendasSeisMeses.getAno());
+        response.setMes(quantidadeVendasSeisMeses.getMes());
         response.setQtdPedidosConcluidos(quantidadeVendasSeisMeses.getQtdPedidosConcluidos());
 
         return response;
