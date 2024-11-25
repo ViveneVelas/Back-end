@@ -16,7 +16,7 @@ jobs:
       
       - name: Verify `pom.xml` exists
         run: |
-          if [ ! -f "./pom.xml" ]; then
+          if [ ! -f "../../pom.xml" ]; then
             echo "Error: pom.xml not found. Check your repository structure.";
             exit 1;
           fi
