@@ -1,5 +1,6 @@
 name: GitHub Actions Demo
 on: [push, pull_request]
+
 jobs:
   Build-and-Test:
     runs-on: ubuntu-latest
@@ -13,15 +14,15 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: maven
-      
+
       - name: Verify `pom.xml` exists
         run: |
-          if [ ! -f "../../pom.xml" ]; then
-            echo "Error: pom.xml not found. Check your repository structure.";
+          if [ ! -f "./inventory.manager/pom.xml" ]; then
+            echo "Error: pom.xml not found in inventory.manager directory.";
             exit 1;
           fi
-      
+
       - name: Build and Test with Maven
         run: |
-          mvn clean install
-          mvn test
+          mvn -f ./inventory.manager/pom.xml clean install
+          mvn -f ./inventory.manager/pom.xml test
