@@ -39,6 +39,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/velas")
 @RequiredArgsConstructor
 @Tag(name = "Vela Controller", description = "APIs para gerenciamento de velas")
+@CrossOrigin(origins = "http://54.236.32.202:3000")
 public class VelaController {
 
     private final VelaService velaService;
