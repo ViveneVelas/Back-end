@@ -21,7 +21,6 @@ import java.util.List;
 @RequestMapping("/pedidos-velas")
 @RequiredArgsConstructor
 @Tag(name = "Pedido Vela Controller", description = "APIs para gerenciamento de pedidos velas")
-@CrossOrigin(origins = "http://localhost:3000")
 public class PedidoVelaController {
 
     private final PedidoVelaService pedidoVelaService;

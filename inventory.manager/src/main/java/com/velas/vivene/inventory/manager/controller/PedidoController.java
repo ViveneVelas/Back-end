@@ -39,7 +39,6 @@ import java.util.List;
 @RequestMapping("/pedidos")
 @RequiredArgsConstructor
 @Tag(name = "Pedido Controller", description = "APIs para gerenciamento de pedidos")
-@CrossOrigin(origins = "http://localhost:3000")
 public class PedidoController {
 
     private final PedidoService pedidoService;
