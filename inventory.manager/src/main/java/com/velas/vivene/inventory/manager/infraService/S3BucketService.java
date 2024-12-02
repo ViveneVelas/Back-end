@@ -30,7 +30,7 @@ public class S3BucketService {
         String prefix = LocalDateTime.now().toString();
         repository.updateReferenciaArquivoFoto(id, prefix + ".jpg");
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket("s302231047")
+                .bucket("vivene-velas-s3-bucket")
                 .key( prefix + ".jpg")
                 .build();
 
@@ -44,7 +44,7 @@ public class S3BucketService {
         }
         String referenciaArquivoFoto = repository.findReferenciaArquivoFotoById(id);
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket("s302231047")
+                .bucket("vivene-velas-s3-bucket")
                 .key(referenciaArquivoFoto)
                 .build();
 
@@ -60,7 +60,7 @@ public class S3BucketService {
 
         String referenciaArquivoFoto = repository.findReferenciaArquivoFotoById(id);
         DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-                .bucket("s302231047")
+                .bucket("vivene-velas-s3-bucket")
                 .key(referenciaArquivoFoto)
                 .build();
 
