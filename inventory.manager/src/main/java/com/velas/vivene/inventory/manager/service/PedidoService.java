@@ -2,11 +2,11 @@ package com.velas.vivene.inventory.manager.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import com.velas.vivene.inventory.manager.commons.Pagamento;
 import com.velas.vivene.inventory.manager.commons.exceptions.CustomDataIntegrityViolationException;
 import com.velas.vivene.inventory.manager.commons.exceptions.NoContentException;
 import com.velas.vivene.inventory.manager.commons.exceptions.ResourceNotFoundException;
@@ -14,12 +14,7 @@ import com.velas.vivene.inventory.manager.commons.exceptions.UnexpectedServerErr
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoMapper;
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoRequestDto;
 import com.velas.vivene.inventory.manager.dto.pedido.PedidoResponseDto;
-import com.velas.vivene.inventory.manager.dto.pedidovela.PedidoVelaRequestDto;
-import com.velas.vivene.inventory.manager.commons.exceptions.*;
 import com.velas.vivene.inventory.manager.entity.*;
-import jakarta.persistence.criteria.*;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
 import com.velas.vivene.inventory.manager.dto.pedido.*;
 import com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses.QuantidadeVendasSeisMesesMapper;
 import com.velas.vivene.inventory.manager.dto.quantidadevendasseismeses.QuantidadeVendasSeisMesesResponse;
@@ -184,7 +179,7 @@ public class PedidoService {
         pedidoRepository.delete(pedido);
     }
 
-    public List<PedidoResponseDto> getAllPedidosFiltro(LocalDate dtValidade, String nomeCliente, String nomeVela ) {
+    public List<PedidoResponseDto> getAllPedidosFiltroNow(LocalDate dtValidade, String nomeCliente, String nomeVela ){
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Pedido> query = cb.createQuery(Pedido.class);
         Root<Pedido> root = query.from(Pedido.class);
@@ -203,7 +198,7 @@ public class PedidoService {
 
         if (nomeVela != null) {
             Join<Pedido, PedidoVela> pedidoVelas = root.join("pedidoVelas");
-                predicates.add(cb.like(pedidoVelas.get("vela").get("nome"), "%" + nomeVela + "%" ));
+            predicates.add(cb.like(pedidoVelas.get("vela").get("nome"), "%" + nomeVela + "%" ));
         }
 
         query.select(root).where(cb.and(predicates.toArray(new Predicate[0])));
@@ -222,6 +217,40 @@ public class PedidoService {
                     return pedidoMapper.toResponseDTO(pedido, listaVelas);
                 })
                 .collect(Collectors.toList());
+    }
+
+    public List<LocalDate> getAllPedidosFiltro(LocalDate dtPedido, String nomeCliente, String nomeVela ) {
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<LocalDate> query = cb.createQuery(LocalDate.class);
+        Root<Pedido> root = query.from(Pedido.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (dtPedido != null) {
+            predicates.add(cb.equal(root.get("dtPedido"), dtPedido));
+        } else {
+            predicates.add(cb.greaterThanOrEqualTo(root.get("dtPedido"), LocalDate.now()));
+        }
+
+        if (nomeCliente != null) {
+            Join<Pedido, Cliente> clienteJoin = root.join("cliente");
+            predicates.add(cb.like(clienteJoin.get("nome"), "%" + nomeCliente + "%"));
+        }
+
+        if (nomeVela != null) {
+            Join<Pedido, PedidoVela> pedidoVelas = root.join("pedidoVelas");
+            predicates.add(cb.like(pedidoVelas.get("vela").get("nome"), "%" + nomeVela + "%"));
+        }
+
+        query.select(root.get("dtPedido"))
+                .where(cb.and(predicates.toArray(new Predicate[0])))
+                .groupBy(root.get("dtPedido"))
+                .orderBy(cb.asc(root.get("dtPedido")));
+
+        List<LocalDate> datasPedidos = entityManager.createQuery(query).getResultList();
+
+        return datasPedidos;
     }
 
     public PedidoResponseDto getPedidoById(Integer id) {

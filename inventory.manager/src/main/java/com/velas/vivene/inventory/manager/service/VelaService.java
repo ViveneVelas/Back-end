@@ -139,9 +139,10 @@ public class VelaService {
         Imagem imagem = imagemRepository.findById(vela.getFkImagem())
         .orElseThrow(() -> new ResourceNotFoundException("Vela não encontrada com o id: " + id));
 
-        imagemService.deleteImagem(imagem.getId());
-        
         velaRepository.delete(vela);
+
+        imagemService.deleteImagem(imagem.getId());
+
     }
     
 

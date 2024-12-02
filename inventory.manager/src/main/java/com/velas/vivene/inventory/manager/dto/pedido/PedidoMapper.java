@@ -7,6 +7,7 @@ import com.velas.vivene.inventory.manager.repository.PedidoVelaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -59,9 +60,23 @@ public class PedidoMapper {
         responseDTO.setClienteId(pedido.getCliente().getId());
         responseDTO.setClienteNome(pedido.getCliente().getNome());
         responseDTO.setListaDeVelas(lista);
-        responseDTO.setColor("#7CC6D7");
-        responseDTO.setTitulo("Pedido - Entrega");
-        responseDTO.setTitle("Pedido - Entrega");
+
+        if (pedido.getStatus().equalsIgnoreCase("concluido")) {
+            responseDTO.setColor("#5fce2c");
+            responseDTO.setTitle("Pedido - Concluído");
+            responseDTO.setTitulo("Pedido - Concluído");
+
+        } else if (pedido.getStatus().equalsIgnoreCase("andamento")) {
+            responseDTO.setColor("#FCF556");
+            responseDTO.setTitulo("Pedido - Andamento");
+            responseDTO.setTitle("Pedido - Andamento");
+
+        } else {
+            responseDTO.setColor("#E43939");
+            responseDTO.setTitulo("Pedido - Não Iniciado");
+            responseDTO.setTitle("Pedido - Não Iniciado");
+        }
+//        responseDTO.setColor("#7CC6D7");
 
         return responseDTO;
     }

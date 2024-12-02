@@ -169,6 +169,22 @@ public class PedidoController {
         return new ResponseEntity<>(responseDTOList, HttpStatus.OK);
     }
 
+    @GetMapping("/filtro/data/now")
+    @Operation(summary = "Busca todos os pedidos com filtro", description = """
+           # Busca todos os pedidos com filtro
+           ---
+           Esse endpoint busca todos os pedidos existentes com filtro
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pedidos buscados com sucesso.",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDto.class))}),
+            @ApiResponse(responseCode = "204", description = "Nenhum pedido encontrado.",
+                    content = { @Content(mediaType = "application/json", schema = @Schema())})})
+    public ResponseEntity<List<PedidoResponseDto>> getAllPedidosFiltroNow(@RequestParam(required = false) String nomeVela, @RequestParam(required = false) LocalDate data, @RequestParam(required = false) String nomeCliente) {
+        List<PedidoResponseDto> responseDTOList = pedidoService.getAllPedidosFiltroNow(data, nomeCliente, nomeVela);
+        return new ResponseEntity<>(responseDTOList, HttpStatus.OK);
+    }
+
     @GetMapping("/filtro")
     @Operation(summary = "Busca todos os pedidos com filtro", description = """
            # Busca todos os pedidos com filtro
@@ -180,8 +196,8 @@ public class PedidoController {
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDto.class))}),
             @ApiResponse(responseCode = "204", description = "Nenhum pedido encontrado.",
                     content = { @Content(mediaType = "application/json", schema = @Schema())})})
-    public ResponseEntity<List<PedidoResponseDto>> getAllPedidosFiltro(@RequestParam(required = false) String nomeVela, @RequestParam(required = false) LocalDate data, @RequestParam(required = false) String nomeCliente) {
-        List<PedidoResponseDto> responseDTOList = pedidoService.getAllPedidosFiltro(data, nomeCliente, nomeVela);
+    public ResponseEntity<List<LocalDate>> getAllPedidosFiltro(@RequestParam(required = false) String nomeVela, @RequestParam(required = false) LocalDate data, @RequestParam(required = false) String nomeCliente) {
+        List<LocalDate> responseDTOList = pedidoService.getAllPedidosFiltro(data, nomeCliente, nomeVela);
         return new ResponseEntity<>(responseDTOList, HttpStatus.OK);
     }
 

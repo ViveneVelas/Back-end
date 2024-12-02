@@ -263,7 +263,7 @@ return null;
 
     public byte[] getQrCode(Integer id) throws IOException  {
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket("vivanevelas-s3-bucket")
+                .bucket("s3lab06")
                 .key("qr_codes/qrcode-id-" + id + ".jpg")
                 .build();
 

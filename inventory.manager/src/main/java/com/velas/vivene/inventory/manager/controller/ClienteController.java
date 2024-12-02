@@ -184,4 +184,9 @@ public class ClienteController {
         clienteService.lerArqTxt(fileContent);
     }
 
+    @PostMapping("/nomes/{nome}")
+    public ResponseEntity<List<ClienteResponseDto>> nomeCliente(@PathVariable String nome) {
+        List<ClienteResponseDto> responseDTO = clienteService.nomeCliente(nome);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
 }

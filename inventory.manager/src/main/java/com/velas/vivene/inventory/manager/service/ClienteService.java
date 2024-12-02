@@ -88,6 +88,19 @@ public class ClienteService {
         return clienteMapper.toResponseDTO(cliente);
     }
 
+    public List<ClienteResponseDto> nomeCliente(String nome) {
+        List<ClienteResponseDto> clientes = clienteRepository.findByNomeIgnoreCase(nome)
+                .stream()
+                .map(clienteMapper::toResponseDTO)
+                .collect(Collectors.toList());
+
+        if (clientes.isEmpty()) {
+            throw new NoContentException("Não existe nenhum cliente no banco de dados");
+        }
+
+        return clientes;
+    }
+
     public List<ClienteMaisComprasResponse> getClienteMaisCompras() {
         List<ClientesMaisCompras> clientes = clientesMaisComprasRepository.findAll();
         if (clientes.isEmpty()) {
