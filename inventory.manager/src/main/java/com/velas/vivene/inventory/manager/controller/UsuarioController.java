@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/usuarios")
 @RequiredArgsConstructor
 @Tag(name = "Usuario Controller", description = "APIs para gerenciamento de usuários")
-@CrossOrigin(origins = "http://54.236.32.202:3000")
+@CrossOrigin(origins = "http://44.192.41.78:3000")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
