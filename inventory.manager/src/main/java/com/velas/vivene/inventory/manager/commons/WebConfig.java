@@ -10,9 +10,11 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://54.82.254.93:3000") // URL do frontend
+        // Permitir requisições de http://44.201.138.244:3000, sem a parte /host
+        registry.addMapping("/**")  // Permite todas as rotas do backend
+                .allowedOrigins("http://44.201.138.244:3000")  // URL do frontend (sem /host)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*");
+                .allowedHeaders("*")
+                .allowCredentials(true);  // Permitir credenciais (cookies, autenticação)
     }
 }

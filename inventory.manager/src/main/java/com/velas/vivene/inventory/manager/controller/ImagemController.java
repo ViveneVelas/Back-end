@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/imagem")
 @RequiredArgsConstructor
 @Tag(name = "Imagem Controller", description = "APIs para gerenciamento de imagens")
-@CrossOrigin(origins = "http://54.82.254.93:3000")
+@CrossOrigin(origins = "http://44.201.138.244:3000")
 public class ImagemController {
 
     private final S3BucketService service;
