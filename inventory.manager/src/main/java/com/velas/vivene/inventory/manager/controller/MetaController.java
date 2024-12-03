@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping("/metas")
 @RequiredArgsConstructor
 @Tag(name = "Meta Controller", description = "APIs para gerenciamento de metas")
-@CrossOrigin(origins = "http://44.192.41.78:3000")
+@CrossOrigin(origins = "http://54.82.254.93:3000")
 public class MetaController {
 
     private final MetaService metaService;
