@@ -24,7 +24,7 @@ import java.util.List;
 @RequestMapping("/vendas")
 @RequiredArgsConstructor
 @Tag(name = "Venda Controller", description = "APIs para gerenciamento de vendas")
-@CrossOrigin(origins = "http://44.192.41.78:3000")
+@CrossOrigin(origins = "http://18.212.185.46:3000")
 public class VendaController {
 
     private final VendaService vendaService;
