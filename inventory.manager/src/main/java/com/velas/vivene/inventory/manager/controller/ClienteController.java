@@ -28,7 +28,7 @@ import java.util.List;
 @RequestMapping("/clientes")
 @RequiredArgsConstructor
 @Tag(name = "Cliente Controller", description = "APIs para gerenciamento de clientes")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://3.87.199.254:3000")
 public class ClienteController {
 
     private final ClienteService clienteService;
