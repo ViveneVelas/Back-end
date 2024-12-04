@@ -37,6 +37,6 @@ public class Pedido {
     @JoinColumn(name = "fk_cliente")
     private Cliente cliente;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.REMOVE)
     private List<PedidoVela> pedidoVelas = new ArrayList<>();
 }

@@ -48,7 +48,8 @@ public class LoteService {
     private final LotesProximosDoVencimentoMapper lotesProximosDoVencimentoMapper;
 
     public LoteResponseDto criarLote(LoteRequestDto loteRequestDTO) throws IOException {
-        Vela vela = velaRepository.findById(loteRequestDTO.getFkVela()).orElseThrow(() -> new ResourceNotFoundException("Vela não encontrada com o id: " + loteRequestDTO.getFkVela()));
+        Vela vela = velaRepository.findById(loteRequestDTO.getFkVela())
+                .orElseThrow(() -> new ResourceNotFoundException("Vela não encontrada com o id: " + loteRequestDTO.getFkVela()));
 
         Lote lote = loteMapper.toEntity(loteRequestDTO);
         lote.setVela(vela);

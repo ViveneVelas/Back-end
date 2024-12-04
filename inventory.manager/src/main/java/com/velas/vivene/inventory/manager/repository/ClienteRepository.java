@@ -13,4 +13,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
 
     @Query("SELECT c FROM Cliente c WHERE LOWER(c.nome) LIKE LOWER(CONCAT('%', :nome, '%'))")
     List<Cliente> findByNomeIgnoreCase(@Param("nome") String nome);
+
+    @Query("SELECT c.nome FROM Cliente c")
+    List<String> findAllNames();
 }

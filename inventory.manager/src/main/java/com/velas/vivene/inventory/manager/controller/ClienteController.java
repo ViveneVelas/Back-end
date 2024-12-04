@@ -28,7 +28,7 @@ import java.util.List;
 @RequestMapping("/clientes")
 @RequiredArgsConstructor
 @Tag(name = "Cliente Controller", description = "APIs para gerenciamento de clientes")
-@CrossOrigin(origins = "http://18.212.185.46:3000")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ClienteController {
 
     private final ClienteService clienteService;
@@ -187,6 +187,12 @@ public class ClienteController {
     @PostMapping("/nomes/{nome}")
     public ResponseEntity<List<ClienteResponseDto>> nomeCliente(@PathVariable String nome) {
         List<ClienteResponseDto> responseDTO = clienteService.nomeCliente(nome);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/nomes")
+    public ResponseEntity<List<String>> nomeCliente() {
+        List<String> responseDTO = clienteService.nomesClientes();
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 }

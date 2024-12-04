@@ -101,6 +101,16 @@ public class ClienteService {
         return clientes;
     }
 
+    public List<String> nomesClientes() {
+        List<String> clientes = clienteRepository.findAllNames();
+
+        if (clientes.isEmpty()) {
+            throw new NoContentException("Não existe nenhum cliente no banco de dados");
+        }
+
+        return clientes;
+    }
+
     public List<ClienteMaisComprasResponse> getClienteMaisCompras() {
         List<ClientesMaisCompras> clientes = clientesMaisComprasRepository.findAll();
         if (clientes.isEmpty()) {

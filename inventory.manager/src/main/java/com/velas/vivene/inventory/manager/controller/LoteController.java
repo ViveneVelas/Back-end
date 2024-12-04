@@ -14,7 +14,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +27,7 @@ import java.util.List;
 @RequestMapping("/lotes")
 @RequiredArgsConstructor
 @Tag(name = "Lote Controller", description = "API para gerenciamento de lotes")
-@CrossOrigin(origins = "http://18.212.185.46:3000")
+@CrossOrigin(origins = "http://localhost:3000")
 public class LoteController {
 
     private final LoteService loteService;
@@ -188,14 +190,21 @@ public class LoteController {
 
     @Operation(summary="Busca o qrCode de um lote")
     @GetMapping(value = "/{id}/qrcode", produces = "image/jpeg")
-    public ResponseEntity<byte[]> getFoto(@PathVariable Integer id) throws IOException {
-        byte[] imagem = loteService.getQrCode(id);
-        if (imagem == null) {
+    public ResponseEntity<byte[]> downloadQrCode(@PathVariable Integer id) throws IOException {
+        byte[] qrCode = loteService.getQrCode(id);
+        if (qrCode == null) {
             return ResponseEntity.notFound().build();
         } else {
-            return ResponseEntity.ok().body(imagem);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM); // Tipo genérico para download
+            headers.setContentDispositionFormData("attachment", "qrcode-" + id + ".png");
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(qrCode);
         }
     }
+
 
     @GetMapping("/filtro-nome/{nome}")
     @Operation(summary = "Busca todos os lotes do estudio", description = """
